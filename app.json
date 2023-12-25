@@ -1,13 +1,26 @@
 {
-  "expo": {
-    "scheme": "acme",
-    "web": {
-      "bundler": "metro"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "name": "react-native-clothing-app",
-    "slug": "react-native-clothing-app"
-  }
+	"expo": {
+		"scheme": "react-native-clothing-app",
+		"web": {
+			"bundler": "metro"
+		},
+		"plugins": ["expo-router", "@react-native-google-signin/google-signin"],
+		"name": "react-native-clothing-app",
+		"slug": "react-native-clothing-app",
+		"android": {
+			"package": "com.takkrish.reactnativeclothingapp"
+		},
+		"ios": {
+			"bundleIdentifier": "com.takkrish.reactnativeclothingapp"
+		},
+		"extra": {
+			"router": {
+				"origin": false
+			},
+			"eas": {
+				"projectId": "a1658db0-0ad8-49e7-bad4-b1b8f542d4a9"
+			}
+		},
+		"owner": "takkrish"
+	}
 }

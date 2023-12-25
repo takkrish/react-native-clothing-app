@@ -5,15 +5,16 @@ const DashboardLayout = () => {
 	return (
 		<Tabs>
 			<Tabs.Screen
-				name='index'
+				name='home/index'
 				options={{
 					headerTitle: 'Home',
 				}}
 			/>
 			<Tabs.Screen
-				name='cart/index'
+				name='cart'
 				options={{
 					headerTitle: 'Cart',
+					headerShown: false,
 				}}
 			/>
 		</Tabs>

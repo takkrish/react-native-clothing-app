@@ -6,7 +6,8 @@ const Cart = () => {
 	return (
 		<View>
 			<Text>Cart Screen</Text>
-			<Link href={'/'}>Home</Link>
+			<Link href={'../home/'}>Home</Link>
+			<Link href={'cart/payment'}>Payment</Link>
 		</View>
 	);
 };
