@@ -3,21 +3,26 @@ import React from 'react';
 import { Link, router } from 'expo-router';
 import { signOut } from 'firebase/auth';
 import { AUTH } from '../../../firebase/config';
+import { useSelector } from 'react-redux';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const App = () => {
+	const { user } = useSelector((state) => state.USER);
 	return (
-		<View>
-			<Text>Home Screen</Text>
-			<Link href='/cart'>Cart</Link>
-			<Link href='/signin'>Auth</Link>
-			<TouchableOpacity
-				onPress={() => {
-					signOut(AUTH);
-					router.replace('/(auth)');
-				}}>
-				<Text>Sign Out</Text>
-			</TouchableOpacity>
-		</View>
+		<SafeAreaView>
+			<View>
+				<Text>Home Screen</Text>
+				<Link href='/cart'>Cart</Link>
+				<Link href='/signin'>Auth</Link>
+				<TouchableOpacity
+					onPress={async () => {
+						await signOut(AUTH);
+						router.replace('/(auth)');
+					}}>
+					<Text>Sign Out</Text>
+				</TouchableOpacity>
+			</View>
+		</SafeAreaView>
 	);
 };
 

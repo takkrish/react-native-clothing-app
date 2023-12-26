@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 
 const DashboardLayout = () => {
 	return (
-		<Tabs>
+		<Tabs screenOptions={{}}>
 			<Tabs.Screen
 				name='home/index'
 				options={{
