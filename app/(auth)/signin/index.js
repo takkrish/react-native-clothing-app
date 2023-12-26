@@ -5,23 +5,21 @@ import {
 	Text,
 	TextInput,
 } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { LinearGradient } from 'expo-linear-gradient';
-import { AUTH } from '../../../firebase/config';
 
+import { AUTH } from '../../../firebase/config';
 import {
 	GOOGLE_IOS_CLIENT_ID,
 	GOOGLE_ANDROID_CLIENT_ID,
 	GOOGLE_WEB_CLIENT_ID,
 } from '@env';
-
-import React, { useState, useEffect, useCallback } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import { router } from 'expo-router';
 import { makeRedirectUri } from 'expo-auth-session';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -35,10 +33,10 @@ const SignIn = () => {
 		iosClientId: GOOGLE_IOS_CLIENT_ID,
 		androidClientId: GOOGLE_ANDROID_CLIENT_ID,
 		webClientId: GOOGLE_WEB_CLIENT_ID,
-		// redirectUri: makeRedirectUri({
-		// 	scheme: 'com.takkrish.reactnativeclothingapp',
-		// 	path: '/',
-		// }),
+		redirectUri: makeRedirectUri({
+			scheme: 'com.takkrish.reactnativeclothingapp',
+			path: '/signin',
+		}),
 	});
 
 	const handlePrompt = useCallback(() => {
@@ -49,17 +47,21 @@ const SignIn = () => {
 		const fetchUser = async () => {
 			if (response?.type === 'success') {
 				const { id_token } = response.params;
-				const credential = await GoogleAuthProvider.credential(
-					id_token
-				);
+				const credential = GoogleAuthProvider.credential(id_token);
 				const googleUser = await signInWithCredential(AUTH, credential);
-				console.log(googleUser.user);
-				router.replace('/home');
-			} else {
-				console.log({ response });
 			}
 		};
 		return () => fetchUser();
+	}, [response]);
+
+	useEffect(() => {
+		// setLoading(true);
+		const subscriber = onAuthStateChanged(AUTH, (user) => {
+			if (user) router.replace('/home');
+		});
+
+		// setLoading(false);
+		return () => subscriber();
 	}, [response]);
 
 	const handleSignin = async () => {
