@@ -15,10 +15,45 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../redux/reducers/userSlice.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { useFonts } from 'expo-font';
+import {
+	Poppins_100Thin,
+	Poppins_200ExtraLight,
+	Poppins_300Light,
+	Poppins_400Regular,
+	Poppins_500Medium,
+	Poppins_600SemiBold,
+	Poppins_700Bold,
+	Poppins_800ExtraBold,
+} from '@expo-google-fonts/poppins';
+
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+
 const GetStarted = () => {
 	const [loading, setLoading] = useState(true);
 	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.USER);
+	const [fontsLoaded, fontError] = useFonts({
+		Poppins_100Thin,
+		Poppins_200ExtraLight,
+		Poppins_300Light,
+		Poppins_400Regular,
+		Poppins_500Medium,
+		Poppins_600SemiBold,
+		Poppins_700Bold,
+		Poppins_800ExtraBold,
+	});
+
+	useEffect(() => {
+		const loaded = async () => {
+			if (fontsLoaded || fontError) {
+				await SplashScreen.hideAsync();
+			}
+		};
+		loaded();
+	}, [fontsLoaded]);
 
 	useEffect(() => {
 		return onAuthStateChanged(AUTH, (user) => {
@@ -26,6 +61,10 @@ const GetStarted = () => {
 			setLoading(false);
 		});
 	}, []);
+
+	if (!fontsLoaded && !fontError) {
+		return null;
+	}
 
 	if (user) {
 		return <Redirect href={'/home'} />;

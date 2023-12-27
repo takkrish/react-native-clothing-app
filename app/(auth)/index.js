@@ -19,7 +19,7 @@ const Auth = () => {
 				<View className='flex flex-col h-full justify-end items-center pb-10'>
 					<View className='flex flex-col justify-center items-center gap-5 w-full'>
 						<Text className='text-4xl font-black text-white'>
-							Avacado
+							Avocado
 						</Text>
 						<TouchableOpacity
 							className='rounded-xl bg-white w-3/4 py-4 flex flex-row gap-x-3 items-center justify-center'
