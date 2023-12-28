@@ -3,24 +3,37 @@ import {
 	Text,
 	TouchableOpacity,
 	FlatList,
+	ScrollView,
+	TextInput,
 	Image,
 	Dimensions,
-	ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { router } from 'expo-router';
 import ReadMore from 'react-native-read-more-text';
 
-const data = Array(6).fill(
+// import ProductImageSlider from '../../../components/product/ProductImageSlider';
+
+const { width } = Dimensions.get('window');
+const data = Array(5).fill(
 	require('../../../assets/roland-hechanova-nutRT2AD580-unsplash.jpg')
 );
-const { width } = Dimensions.get('window');
+
+const bankOffers = [
+	'10% Instant Discount on HDFC Bank Credit Cards and Credit/Debit EMI Transactions.',
+	'10% Instant Discount on SBI Bank Credit Cards and Credit/Debit EMI Transactions.',
+	'Get 10% Cashback of up to Rs.100 on your first ever Paytm UPI transaction on purchase of ₹3000 and above.',
+	'10% Instant Discount on Axis Bank Credit Cards and Credit/Debit EMI Transactions.',
+	'Get 10% Cashback of up to Rs.100 on your first ever Paytm UPI transaction on purchase of ₹5000 and above.',
+	'10% Instant Discount on ICICI Bank Credit Cards and Credit/Debit EMI Transactions.',
+];
 
 const ProductID = () => {
-	const [index, setIndex] = useState(0);
+	const [favourite, setFavourite] = useState(false);
 	const [size, setSize] = useState('M');
 	const [color, setColor] = useState('Blue');
 	return (
@@ -43,99 +56,55 @@ const ProductID = () => {
 				<Text
 					className='text-lg'
 					style={{
-						fontFamily: 'Poppins_500Medium',
+						fontFamily: 'Inter_500Medium',
 					}}>
 					Product
 				</Text>
-				<TouchableOpacity className='bg-zinc-100 rounded-full w-12 h-12 flex justify-center items-center'>
-					<Icon name='heart-outline' size={24} />
+				<TouchableOpacity
+					onPress={() => setFavourite((prev) => !prev)}
+					className='bg-zinc-100 rounded-full w-12 h-12 flex justify-center items-center'>
+					<Icon
+						name={favourite ? 'heart' : 'heart-outline'}
+						size={24}
+						color={favourite ? '#EF4444' : '#000'}
+					/>
 				</TouchableOpacity>
 			</View>
 			<ScrollView
-				className='flex flex-col gap-y-3 mt-0'
+				className='flex flex-col gap-y-8 mt-0'
 				showsVerticalScrollIndicator={false}>
-				<View className='rounded-xl overflow-hidden w-full relative flex items-center'>
-					<FlatList
-						data={data}
-						horizontal
-						pagingEnabled
-						keyExtractor={(item, index) => index}
-						showsHorizontalScrollIndicator={false}
-						onScroll={(e) => {
-							setIndex(
-								(
-									e.nativeEvent.contentOffset.x /
-									(width - 40)
-								).toFixed(0)
-							);
-						}}
-						renderItem={({ item, index, separators }) => {
-							return (
-								<Image
-									key={index}
-									source={item}
-									resizeMethod='resize'
-									resizeMode='cover'
-									style={{
-										height: 350,
-										width: width - 40,
-									}}
-								/>
-							);
-						}}
-					/>
-					<View className='h-1 w-4/5 absolute bottom-3 rounded-full bg-zinc-400 flex flex-row items-center justify-center'>
-						{data.map((item, idx) => {
-							return (
-								<View
-									key={idx}
-									className={`h-1 rounded-full  ${
-										index == idx
-											? 'bg-zinc-50'
-											: 'bg-zinc-400'
-									}`}
-									style={{
-										width: `${100 / data.length}%`,
-									}}
-								/>
-							);
-						})}
-					</View>
-				</View>
+				<ProductImageSlider />
 				<View className='flex flex-row justify-between items-center'>
 					<View className='flex flex-col'>
 						<Text
 							className='text-xl'
 							style={{
-								fontFamily: 'Poppins_600SemiBold',
+								fontFamily: 'Inter_600SemiBold',
 							}}>
 							Avocado
 						</Text>
 						<Text
 							className='text-sm'
 							style={{
-								fontFamily: 'Poppins_400Regular',
+								fontFamily: 'Inter_400Regular',
 							}}>
 							Jacket
 						</Text>
 					</View>
-					<View className='flex flex-col items-center justify-center'>
-						<Text className='text-xs'>Ratings</Text>
-						<View className='flex flex-row items-center justify-center gap-x-2'>
-							<AntDesign name='star' size={20} color='#FBBF24' />
-							<Text
-								className='text-sm'
-								style={{ fontFamily: 'Poppins_600SemiBold' }}>
-								4.2 (451)
-							</Text>
-						</View>
+					<View className='flex flex-row items-center justify-center gap-x-2'>
+						<AntDesign name='star' size={20} color='#FBBF24' />
+						<Text
+							className='text-sm'
+							style={{ fontFamily: 'Inter_600SemiBold' }}>
+							4.2 (451)
+						</Text>
 					</View>
 				</View>
-				<View style={{ flex: 1 }}>
+				<View>
 					<Text
 						className='text-base mb-2'
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
 						Size
 					</Text>
@@ -156,12 +125,12 @@ const ProductID = () => {
 									onPress={() => setSize(item)}
 									className={`flex items-center justify-center rounded-full h-12 w-12 border  ${
 										size === item
-											? 'border-zinc-300 bg-zinc-200'
-											: 'border-zinc-100'
+											? 'border-zinc-400 bg-zinc-200'
+											: 'bg-zinc-50 border-zinc-100'
 									}`}>
 									<Text
 										style={{
-											fontFamily: 'Poppins_400Regular',
+											fontFamily: 'Inter_400Regular',
 										}}>
 										{item}
 									</Text>
@@ -170,13 +139,13 @@ const ProductID = () => {
 						/>
 					</View>
 				</View>
-				<View style={{ flex: 1 }}>
+				<View>
 					<Text
 						className='text-base mb-2'
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
-						Colors
+						Color
 					</Text>
 					<View>
 						<FlatList
@@ -197,14 +166,14 @@ const ProductID = () => {
 							renderItem={({ item }) => (
 								<TouchableOpacity
 									onPress={() => setColor(item)}
-									className={`flex items-center justify-center rounded-lg h-12 w-20 border  ${
+									className={`flex items-center justify-center rounded-lg h-10 w-20 border  ${
 										color === item
-											? 'border-zinc-300 bg-zinc-200'
-											: 'border-zinc-100'
+											? 'border-zinc-400 bg-zinc-200'
+											: 'bg-zinc-50 border-zinc-100'
 									}`}>
 									<Text
 										style={{
-											fontFamily: 'Poppins_400Regular',
+											fontFamily: 'Inter_400Regular',
 										}}>
 										{item}
 									</Text>
@@ -213,16 +182,123 @@ const ProductID = () => {
 						/>
 					</View>
 				</View>
-				<View className='flex flex-col rounded-xl'>
+				<View>
+					<Text
+						className='text-base mb-2'
+						style={{ fontFamily: 'Inter_600SemiBold' }}>
+						Delivery Details
+					</Text>
+					<Text
+						className='text-sm mb-2'
+						style={{ fontFamily: 'Inter_400Regular' }}>
+						Enter Pincode to check delivery date and availability
+						options.
+					</Text>
+					<View className='flex flex-row items-stretch gap-x-3'>
+						<TextInput
+							className='bg-gray-100 rounded-lg px-5 py-3 flex-1'
+							style={{
+								fontFamily: 'Inter_400Regular',
+							}}
+							placeholder='Please enter a pincode'
+						/>
+						<TouchableOpacity className='px-5 bg-amber-300 rounded-xl flex items-center justify-center'>
+							<Text
+								className='text-xs'
+								style={{ fontFamily: 'Inter_600SemiBold' }}>
+								Check
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+				<View>
+					<Text
+						className='text-base mb-2'
+						style={{ fontFamily: 'Inter_600SemiBold' }}>
+						Cashback Offers
+					</Text>
+					<FlatList
+						scrollEnabled={false}
+						data={bankOffers}
+						contentContainerStyle={{
+							flex: 1,
+							gap: 16,
+						}}
+						keyExtractor={(item, index) => item}
+						renderItem={({ item, index }) => (
+							<View
+								key={index}
+								className='flex flex-row items-center justify-normal gap-x-3'>
+								<Icon name='wallet' size={20} />
+								<View className='flex gap-y-1 flex-1 items-start'>
+									<Text
+										style={{
+											fontFamily: 'Inter_400Regular',
+										}}>
+										{item}
+									</Text>
+									<TouchableOpacity>
+										<Text
+											className='text-sky-600 text-xs'
+											style={{
+												fontFamily: 'Inter_500Medium',
+											}}>
+											T&C Apply
+										</Text>
+									</TouchableOpacity>
+								</View>
+							</View>
+						)}
+					/>
+				</View>
+				<View>
 					<Text
 						className='text-base mb-2'
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
-						Description
+						Product Details
+					</Text>
+					<View>
+						<FlatList
+							data={[
+								'Zipper Pocket',
+								'Placement logo applique',
+								'Long sleeves',
+								'Zipper fastening',
+								'100% Polyester',
+								'Machine washable',
+							]}
+							contentContainerStyle={{
+								gap: 4,
+							}}
+							scrollEnabled={false}
+							renderItem={({ item, index }) => (
+								<View
+									key={index}
+									className='flex gap-x-2 flex-row items-center'>
+									<View className='h-1 w-1 rounded-full bg-zinc-800 text-zinc-800'></View>
+									<Text
+										style={{
+											fontFamily: 'Inter_400Regular',
+										}}>
+										{item}
+									</Text>
+								</View>
+							)}
+						/>
+					</View>
+				</View>
+				<View>
+					<Text
+						className='text-base mb-2'
+						style={{
+							fontFamily: 'Inter_600SemiBold',
+						}}>
+						Other Information
 					</Text>
 					<ReadMore
-						numberOfLines={5}
+						numberOfLines={3}
 						renderTruncatedFooter={(handlePress) => {
 							return (
 								<TouchableOpacity
@@ -231,7 +307,7 @@ const ProductID = () => {
 									<Text
 										className='text-sm text-red-500'
 										style={{
-											fontFamily: 'Poppins_400Regular',
+											fontFamily: 'Inter_400Regular',
 										}}>
 										Read more
 									</Text>
@@ -246,7 +322,7 @@ const ProductID = () => {
 									<Text
 										className='text-sm text-red-500'
 										style={{
-											fontFamily: 'Poppins_400Regular',
+											fontFamily: 'Inter_400Regular',
 										}}>
 										Read less
 									</Text>
@@ -256,7 +332,7 @@ const ProductID = () => {
 						<Text
 							className='text-sm'
 							style={{
-								fontFamily: 'Poppins_400Regular',
+								fontFamily: 'Inter_400Regular',
 							}}>
 							Lorem ipsum, dolor sit amet consectetur adipisicing
 							elit. Quia veritatis qui enim iure laboriosam
@@ -277,31 +353,197 @@ const ProductID = () => {
 						</Text>
 					</ReadMore>
 				</View>
+				<View className='flex flex-row justify-around items-start py-6 bg-zinc-100 rounded-xl'>
+					<View className='flex justify-center items-center flex-1'>
+						<Icon name='person' size={24} />
+						<Text
+							className='self-center text-xs mt-3'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							1M+
+						</Text>
+						<Text
+							className='self-center text-xs'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Happy
+						</Text>
+						<Text
+							className='self-center text-xs'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Customers
+						</Text>
+					</View>
+					<View className='flex justify-center items-center flex-1'>
+						<MaterialIcon name='security' size={24} />
+						<Text
+							className='self-center text-xs mt-3'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Genuine
+						</Text>
+						<Text
+							className='self-center text-xs'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Product
+						</Text>
+					</View>
+					<View className='flex justify-center items-center flex-1'>
+						<Icon name='shield-checkmark' size={24} />
+						<Text
+							className='self-center text-xs mt-3'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Quality
+						</Text>
+						<Text
+							className='self-center text-xs'
+							style={{
+								fontFamily: 'Inter_500Medium',
+								textAlign: 'center',
+							}}>
+							Checked
+						</Text>
+					</View>
+				</View>
+				<View>
+					<Text
+						className='text-base mb-2'
+						style={{
+							fontFamily: 'Inter_600SemiBold',
+						}}>
+						Customer Reviews
+					</Text>
+					<View className='flex flex-row items-center justify-between'>
+						<View className='flex flex-row items-center'>
+							<View className='flex flex-row items-center gap-x-2'>
+								<AntDesign
+									name='star'
+									size={20}
+									color='#FBBF24'
+								/>
+								<Text
+									className='text-sm'
+									style={{
+										fontFamily: 'Inter_600SemiBold',
+									}}>
+									4.2
+								</Text>
+							</View>
+							<Text
+								className='text-sm'
+								style={{
+									fontFamily: 'Inter_400Regular',
+								}}>
+								(451)
+							</Text>
+						</View>
+						<TouchableOpacity>
+							<Text
+								className='text-sm'
+								style={{
+									fontFamily: 'Inter_400Regular',
+								}}>
+								See All
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+				<View className='h-5'></View>
 			</ScrollView>
+			{/* <KeyboardAvoidingView enabled={false} behavior='height'> */}
 			<View
 				className='w-screen py-3
 			 flex flex-row bottom-0 bg-zinc-100 self-center justify-around items-center'>
 				<View className='flex flex-col justify-center items-center'>
-					<Text style={{ fontFamily: 'Poppins_400Regular' }}>
+					<Text style={{ fontFamily: 'Inter_400Regular' }}>
 						Price
 					</Text>
 					<Text
 						className='text-lg'
-						style={{ fontFamily: 'Poppins_600SemiBold' }}>
+						style={{ fontFamily: 'Inter_600SemiBold' }}>
 						₹ 1099.00
 					</Text>
 				</View>
-				<TouchableOpacity className='flex items-center justify-center bg-emerald-500 rounded-xl px-12 py-5'>
+				<TouchableOpacity
+					// onPress={() => router.replace('(dashboard)/cart')}
+					className='flex items-center justify-center bg-emerald-500 rounded-xl px-10 py-5'>
 					<Text
 						className='text-white'
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
-						Buy Now
+						Add to Cart
 					</Text>
 				</TouchableOpacity>
 			</View>
+			{/* </KeyboardAvoidingView> */}
 		</SafeAreaView>
+	);
+};
+
+const ProductImageSlider = () => {
+	const [index, setIndex] = useState(0);
+	return (
+		<View className='rounded-xl overflow-hidden relative flex items-center justify-center'>
+			<FlatList
+				data={data}
+				horizontal
+				pagingEnabled
+				keyExtractor={(item, index) => index}
+				showsHorizontalScrollIndicator={false}
+				onScroll={(e) => {
+					setIndex(
+						(e.nativeEvent.contentOffset.x / (width - 40)).toFixed(
+							0
+						)
+					);
+				}}
+				renderItem={({ item, index, separators }) => {
+					return (
+						<Image
+							key={index}
+							source={item}
+							resizeMethod='resize'
+							resizeMode='cover'
+							style={{
+								height: 350,
+								width: width - 40,
+							}}
+						/>
+					);
+				}}
+			/>
+			<View className='h-1 w-4/5 absolute bottom-2 rounded-full bg-white/30 flex flex-row items-center justify-center'>
+				{data.map((item, idx) => {
+					return (
+						<View
+							key={idx}
+							className={`h-1 rounded-full  ${
+								index == idx ? 'bg-zinc-50' : 'bg-transparent'
+							}`}
+							style={{
+								flex: 1,
+							}}
+						/>
+					);
+				})}
+			</View>
+		</View>
 	);
 };
 

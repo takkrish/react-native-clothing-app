@@ -17,15 +17,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useFonts } from 'expo-font';
 import {
-	Poppins_100Thin,
-	Poppins_200ExtraLight,
-	Poppins_300Light,
-	Poppins_400Regular,
-	Poppins_500Medium,
-	Poppins_600SemiBold,
-	Poppins_700Bold,
-	Poppins_800ExtraBold,
-} from '@expo-google-fonts/poppins';
+	Inter_100Thin,
+	Inter_200ExtraLight,
+	Inter_300Light,
+	Inter_400Regular,
+	Inter_500Medium,
+	Inter_600SemiBold,
+	Inter_700Bold,
+	Inter_800ExtraBold,
+	Inter_900Black,
+} from '@expo-google-fonts/inter';
 
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -36,14 +37,15 @@ const GetStarted = () => {
 	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.USER);
 	const [fontsLoaded, fontError] = useFonts({
-		Poppins_100Thin,
-		Poppins_200ExtraLight,
-		Poppins_300Light,
-		Poppins_400Regular,
-		Poppins_500Medium,
-		Poppins_600SemiBold,
-		Poppins_700Bold,
-		Poppins_800ExtraBold,
+		Inter_100Thin,
+		Inter_200ExtraLight,
+		Inter_300Light,
+		Inter_400Regular,
+		Inter_500Medium,
+		Inter_600SemiBold,
+		Inter_700Bold,
+		Inter_800ExtraBold,
+		Inter_900Black,
 	});
 
 	useEffect(() => {

@@ -9,14 +9,16 @@ import {
 	View,
 } from 'react-native';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { router } from 'expo-router';
+import { addItem } from '../../../redux/reducers/cartSlice';
 
 const { width } = Dimensions.get('window');
 
 const App = () => {
+	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.USER);
 	const [selectedCategory, setSelectedCategory] = useState('All');
 	return (
@@ -29,7 +31,7 @@ const App = () => {
 				<Text
 					className='text-xl text-zinc-800 dark:text-zinc-100'
 					style={{
-						fontFamily: 'Poppins_700Bold',
+						fontFamily: 'Inter_800ExtraBold',
 					}}>
 					Avocado
 				</Text>
@@ -41,6 +43,7 @@ const App = () => {
 					/>
 				</TouchableOpacity>
 			</View>
+
 			<ScrollView
 				className='flex flex-col gap-y-5 mt-0'
 				showsVerticalScrollIndicator={false}
@@ -48,19 +51,19 @@ const App = () => {
 				<Text
 					className='text-xl'
 					style={{
-						fontFamily: 'Poppins_400Regular',
+						fontFamily: 'Inter_400Regular',
 					}}>
 					Save up to{' '}
 					<Text
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
 						-50%
 					</Text>{' '}
 					using promocode{' '}
 					<Text
 						style={{
-							fontFamily: 'Poppins_600SemiBold',
+							fontFamily: 'Inter_600SemiBold',
 						}}>
 						BLACKFRIDAY
 					</Text>
@@ -69,7 +72,7 @@ const App = () => {
 					placeholder='Search'
 					className='bg-gray-100 rounded-lg py-3 px-5'
 					style={{
-						fontFamily: 'Poppins_400Regular',
+						fontFamily: 'Inter_400Regular',
 					}}
 				/>
 				<View className='bg-white flex items-center justify-center py-3'>
@@ -112,12 +115,12 @@ const App = () => {
 								}}
 								className={`flex flex-row items-center bg-zinc-100 rounded-full py-2 px-3 ${
 									selectedCategory === item.type &&
-									'bg-zinc-200 border border-zinc-400'
+									'bg-zinc-300 border border-zinc-400'
 								}`}>
 								<Text
-									className='text-sm font-normal mx-3'
+									className='text-xs font-normal mx-3'
 									style={{
-										fontFamily: 'Poppins_400Regular',
+										fontFamily: 'Inter_400Regular',
 									}}>
 									{item.type}
 								</Text>
@@ -127,7 +130,7 @@ const App = () => {
 				</View>
 				<FlatList
 					scrollEnabled={false}
-					data={Array(30)}
+					data={Array(20)}
 					numColumns={2}
 					contentContainerStyle={{
 						gap: 10,
@@ -153,14 +156,14 @@ const App = () => {
 									<Text
 										className='text-sm'
 										style={{
-											fontFamily: 'Poppins_600SemiBold',
+											fontFamily: 'Inter_600SemiBold',
 										}}>
 										Avacado
 									</Text>
 									<Text
 										className='text-xs'
 										style={{
-											fontFamily: 'Poppins_400Regular',
+											fontFamily: 'Inter_400Regular',
 										}}>
 										Jacket
 									</Text>
@@ -168,12 +171,20 @@ const App = () => {
 										<Text
 											className='text-sm'
 											style={{
-												fontFamily:
-													'Poppins_400Regular',
+												fontFamily: 'Inter_500Medium',
 											}}>
 											₹ 1,099.00
 										</Text>
-										<TouchableOpacity>
+										<TouchableOpacity
+											onPress={() => {
+												dispatch(
+													addItem({
+														id: index,
+														name: `Avacado_Jacket_${index}`,
+														imgSrc: '../../../assets/katsiaryna-endruszkiewicz-BteCp6aq4GI-unsplash.jpg',
+													})
+												);
+											}}>
 											<Icon
 												name='add-circle-sharp'
 												size={35}
@@ -185,7 +196,7 @@ const App = () => {
 						</View>
 					)}
 				/>
-				<View className='h-20'></View>
+				<View className='h-10'></View>
 			</ScrollView>
 		</SafeAreaView>
 	);
