@@ -8,20 +8,21 @@ import {
 	Image,
 	Dimensions,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import ReadMore from 'react-native-read-more-text';
-
-// import ProductImageSlider from '../../../components/product/ProductImageSlider';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	addFavourite,
+	removeFavourite,
+} from '../../../redux/reducers/favouriteSlice';
+import { productsData } from '../../../constants/productsData';
 
 const { width } = Dimensions.get('window');
-const data = Array(5).fill(
-	require('../../../assets/roland-hechanova-nutRT2AD580-unsplash.jpg')
-);
 
 const bankOffers = [
 	'10% Instant Discount on HDFC Bank Credit Cards and Credit/Debit EMI Transactions.',
@@ -33,9 +34,36 @@ const bankOffers = [
 ];
 
 const ProductID = () => {
+	const { productID } = useLocalSearchParams();
+	const dispatch = useDispatch();
+	const { favourites } = useSelector((state) => state.FAVOURITE);
 	const [favourite, setFavourite] = useState(false);
 	const [size, setSize] = useState('M');
 	const [color, setColor] = useState('Blue');
+
+	useEffect(() => {
+		const isFavourite = favourites.find(
+			(item) => item.id === parseInt(productID)
+		);
+		setFavourite(isFavourite ? true : false);
+	}, []);
+
+	const handleFavourite = () => {
+		const product = productsData.find(
+			(item) => item.id === parseInt(productID)
+		);
+		setFavourite((prev) => {
+			!prev
+				? dispatch(addFavourite(product))
+				: dispatch(
+						removeFavourite({
+							id: parseInt(productID),
+						})
+				  );
+			return !prev;
+		});
+	};
+
 	return (
 		<SafeAreaView
 			className='h-full'
@@ -61,7 +89,7 @@ const ProductID = () => {
 					Product
 				</Text>
 				<TouchableOpacity
-					onPress={() => setFavourite((prev) => !prev)}
+					onPress={handleFavourite}
 					className='bg-zinc-100 rounded-full w-12 h-12 flex justify-center items-center'>
 					<Icon
 						name={favourite ? 'heart' : 'heart-outline'}
@@ -480,7 +508,7 @@ const ProductID = () => {
 					</Text>
 				</View>
 				<TouchableOpacity
-					// onPress={() => router.replace('(dashboard)/cart')}
+					// onPress={() => dispatch(add)}
 					className='flex items-center justify-center bg-emerald-500 rounded-xl px-10 py-5'>
 					<Text
 						className='text-white'
@@ -497,9 +525,14 @@ const ProductID = () => {
 };
 
 const ProductImageSlider = () => {
-	const [index, setIndex] = useState(0);
+	const [left, setLeft] = useState(0);
+	const { productID } = useLocalSearchParams();
+	const product = productsData.find(
+		(item) => item.id === parseInt(productID)
+	);
+	const data = Array(5).fill(product.imgSource);
 	return (
-		<View className='rounded-xl overflow-hidden relative flex items-center justify-center'>
+		<View className='rounded-xl overflow-hidden flex items-center justify-center relative'>
 			<FlatList
 				data={data}
 				horizontal
@@ -507,19 +540,24 @@ const ProductImageSlider = () => {
 				keyExtractor={(item, index) => index}
 				showsHorizontalScrollIndicator={false}
 				onScroll={(e) => {
-					setIndex(
-						(e.nativeEvent.contentOffset.x / (width - 40)).toFixed(
-							0
-						)
-					);
+					const paddingX = 40;
+					const widthOfScrollElement = 40;
+
+					const _width = (width - paddingX) * 0.8;
+					const _left =
+						(e.nativeEvent.contentOffset.x -
+							widthOfScrollElement *
+								(e.nativeEvent.contentOffset.x / _width)) /
+						data.length;
+					setLeft(_left);
 				}}
-				renderItem={({ item, index, separators }) => {
+				renderItem={({ item, index }) => {
 					return (
 						<Image
 							key={index}
 							source={item}
 							resizeMethod='resize'
-							resizeMode='cover'
+							resizeMode='contain'
 							style={{
 								height: 350,
 								width: width - 40,
@@ -528,20 +566,13 @@ const ProductImageSlider = () => {
 					);
 				}}
 			/>
-			<View className='h-1 w-4/5 absolute bottom-2 rounded-full bg-white/30 flex flex-row items-center justify-center'>
-				{data.map((item, idx) => {
-					return (
-						<View
-							key={idx}
-							className={`h-1 rounded-full  ${
-								index == idx ? 'bg-zinc-50' : 'bg-transparent'
-							}`}
-							style={{
-								flex: 1,
-							}}
-						/>
-					);
-				})}
+			<View className='w-4/5 absolute bottom-2 rounded-full invert bg-white/30 flex flex-row items-center'>
+				<View
+					className='bg-zinc-100 backdrop-invert relative rounded-full h-1 w-10'
+					style={{
+						left: left,
+					}}
+				/>
 			</View>
 		</View>
 	);

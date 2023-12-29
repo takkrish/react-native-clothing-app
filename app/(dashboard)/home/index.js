@@ -14,11 +14,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { addItem } from '../../../redux/reducers/cartSlice';
+import { productsData } from '../../../constants/productsData';
 
 const { width } = Dimensions.get('window');
 
 const App = () => {
-	const dispatch = useDispatch();
 	const { user } = useSelector((state) => state.USER);
 	const [selectedCategory, setSelectedCategory] = useState('All');
 	return (
@@ -128,77 +128,89 @@ const App = () => {
 						)}
 					/>
 				</View>
-				<FlatList
-					scrollEnabled={false}
-					data={Array(20)}
-					numColumns={2}
-					contentContainerStyle={{
-						gap: 10,
-					}}
-					columnWrapperStyle={{
-						gap: 10,
-					}}
-					renderItem={({ item, index }) => (
-						<View
-							className='flex flex-col justify-center items-center bg-zinc-100 rounded-xl overflow-hidden'
-							key={index}>
-							<TouchableOpacity
-								onPress={() => router.push('product/' + item)}>
-								<Image
-									className=''
-									source={require('../../../assets/roland-hechanova-nutRT2AD580-unsplash.jpg')}
-									style={{
-										width: width / 2 - 25,
-										height: 180,
-									}}
-								/>
-								<View className='p-2'>
-									<Text
-										className='text-sm'
-										style={{
-											fontFamily: 'Inter_600SemiBold',
-										}}>
-										Avacado
-									</Text>
-									<Text
-										className='text-xs'
-										style={{
-											fontFamily: 'Inter_400Regular',
-										}}>
-										Jacket
-									</Text>
-									<View className='flex flex-row justify-between items-center'>
-										<Text
-											className='text-sm'
-											style={{
-												fontFamily: 'Inter_500Medium',
-											}}>
-											₹ 1,099.00
-										</Text>
-										<TouchableOpacity
-											onPress={() => {
-												dispatch(
-													addItem({
-														id: index,
-														name: `Avacado_Jacket_${index}`,
-														imgSrc: '../../../assets/katsiaryna-endruszkiewicz-BteCp6aq4GI-unsplash.jpg',
-													})
-												);
-											}}>
-											<Icon
-												name='add-circle-sharp'
-												size={35}
-											/>
-										</TouchableOpacity>
-									</View>
-								</View>
-							</TouchableOpacity>
-						</View>
-					)}
-				/>
+				<ProductsList />
 				<View className='h-10'></View>
 			</ScrollView>
 		</SafeAreaView>
+	);
+};
+
+const ProductsList = () => {
+	const dispatch = useDispatch();
+	const { items } = useSelector((state) => state.CART);
+
+	const handleAddItem = (item) => {
+		const isAlreadyInCart = items.find((i) => i.id === item.id);
+		isAlreadyInCart ? router.push('/cart') : dispatch(addItem(item));
+	};
+
+	return (
+		<FlatList
+			scrollEnabled={false}
+			data={productsData}
+			numColumns={2}
+			contentContainerStyle={{
+				gap: 10,
+			}}
+			columnWrapperStyle={{
+				gap: 10,
+			}}
+			renderItem={({ item, index }) => {
+				const isAlreadyInCart = items.find((i) => i.id === item.id);
+				return (
+					<View
+						className='flex flex-col justify-center items-center bg-zinc-100 rounded-xl overflow-hidden'
+						key={index}>
+						<TouchableOpacity
+							onPress={() => router.push('product/' + item.id)}>
+							<Image
+								source={item.imgSource}
+								style={{
+									width: width / 2 - 25,
+									height: 180,
+								}}
+							/>
+							<View className='p-2'>
+								<Text
+									className='text-xs'
+									style={{
+										fontFamily: 'Inter_600SemiBold',
+									}}>
+									{item.name}
+								</Text>
+								<Text
+									className='text-xs'
+									style={{
+										fontFamily: 'Inter_400Regular',
+									}}>
+									{item.type}
+								</Text>
+								<View className='flex flex-row justify-between items-center'>
+									<Text
+										style={{
+											fontFamily: 'Inter_600SemiBold',
+										}}>
+										₹ {item.price}
+									</Text>
+									<TouchableOpacity
+										className='h-10 w-10 bg-white border border-zinc-200 rounded-full flex items-center justify-center'
+										onPress={() => handleAddItem(item)}>
+										<Icon
+											name={
+												isAlreadyInCart
+													? 'cart'
+													: 'add-circle'
+											}
+											size={24}
+										/>
+									</TouchableOpacity>
+								</View>
+							</View>
+						</TouchableOpacity>
+					</View>
+				);
+			}}
+		/>
 	);
 };
 

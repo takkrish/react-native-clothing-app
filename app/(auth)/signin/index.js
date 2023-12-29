@@ -10,6 +10,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/AntDesign';
 import { LinearGradient } from 'expo-linear-gradient';
+import Toast from 'react-native-root-toast';
 
 import { AUTH } from '../../../firebase/config';
 import {
@@ -53,11 +54,21 @@ const SignIn = () => {
 			if (response?.type === 'success') {
 				const { id_token } = response.params;
 				const credential = GoogleAuthProvider.credential(id_token);
-				await signInWithCredential(AUTH, credential).then((data) => {
-					// console.log(JSON.stringify(data, null, 4));
-					dispatch(setUser(data.user));
-					router.replace('/home');
-				});
+				await signInWithCredential(AUTH, credential)
+					.then((data) => {
+						dispatch(setUser(data.user));
+						router.replace('/home');
+					})
+					.catch((error) => {
+						let toast = Toast.show(error.message, {
+							duration: Toast.durations.LONG,
+							position: Toast.positions.BOTTOM,
+							shadow: true,
+							animation: true,
+							hideOnPress: true,
+							delay: 0,
+						});
+					});
 			}
 			setLoading(false);
 		};
