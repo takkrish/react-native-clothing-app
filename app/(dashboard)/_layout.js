@@ -38,7 +38,7 @@ const DashboardLayout = () => {
 					tabBarIcon: ({ color, focused, size }) => (
 						<Icon
 							name={focused ? 'home' : 'home-outline'}
-							size={size * 0.8}
+							size={size}
 							color={color}
 						/>
 					),
@@ -53,7 +53,7 @@ const DashboardLayout = () => {
 					tabBarIcon: ({ color, focused, size }) => (
 						<Icon
 							name={focused ? 'cart' : 'cart-outline'}
-							size={size * 0.8}
+							size={size}
 							color={color}
 						/>
 					),
@@ -68,7 +68,7 @@ const DashboardLayout = () => {
 					tabBarIcon: ({ color, focused, size }) => (
 						<Icon
 							name={focused ? 'heart' : 'heart-outline'}
-							size={size * 0.8}
+							size={size}
 							color={color}
 						/>
 					),
@@ -83,7 +83,7 @@ const DashboardLayout = () => {
 						<>
 							<Icon
 								name={focused ? 'person' : 'person-outline'}
-								size={size * 0.8}
+								size={size}
 								color={color}
 							/>
 							{/* <Text>Menu</Text> */}
