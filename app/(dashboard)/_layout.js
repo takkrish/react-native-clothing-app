@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
+import { Platform } from 'react-native';
 
 const DashboardLayout = () => {
+	const { items } = useSelector((state) => state.CART);
+	const [cartItems, setCartItems] = useState(0);
+	useEffect(() => {
+		setCartItems(
+			items.reduce((prev, curr) => {
+				return prev + curr.quantity;
+			}, 0)
+		);
+	}, [items]);
 	return (
 		<Tabs
 			screenOptions={{
@@ -11,24 +23,16 @@ const DashboardLayout = () => {
 				headerShadowVisible: true,
 				tabBarShowLabel: false,
 				headerShown: false,
+				tabBarIconStyle: {
+					height: 50,
+					flex: 0,
+				},
 				tabBarItemStyle: {
-					// height: 80,
+					justifyContent: 'center',
+					flexGrow: 1,
 				},
 				tabBarStyle: {
-					height: 80,
-					// borderRadius: 50,
-					// position: 'absolute',
-					// bottom: 20,
-					// left: 20,
-					// right: 20,
-					elevation: 0,
-					shadowColor: '#000',
-					shadowOpacity: 0.1,
-					shadowRadius: 0,
-					shadowOffset: {
-						width: 0,
-						height: 0,
-					},
+					height: Platform.OS === 'ios' ? 90 : 60,
 				},
 			}}>
 			<Tabs.Screen
@@ -36,8 +40,8 @@ const DashboardLayout = () => {
 				options={{
 					headerTitle: 'Home',
 					tabBarIcon: ({ color, focused, size }) => (
-						<Icon
-							name={focused ? 'home' : 'home-outline'}
+						<MaterialCommunityIcon
+							name={focused ? 'storefront' : 'storefront-outline'}
 							size={size}
 							color={color}
 						/>
@@ -49,7 +53,11 @@ const DashboardLayout = () => {
 				options={{
 					headerTitle: 'Cart',
 					headerShown: false,
-					// tabBarBadge: 4,
+					tabBarBadge: cartItems === 0 ? null : cartItems,
+					tabBarBadgeStyle: {
+						color: '#fff',
+						fontSize: 12,
+					},
 					tabBarIcon: ({ color, focused, size }) => (
 						<Icon
 							name={focused ? 'cart' : 'cart-outline'}
@@ -86,7 +94,6 @@ const DashboardLayout = () => {
 								size={size}
 								color={color}
 							/>
-							{/* <Text>Menu</Text> */}
 						</>
 					),
 				}}

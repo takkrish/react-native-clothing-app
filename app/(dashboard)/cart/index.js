@@ -22,7 +22,8 @@ const Cart = () => {
 	const { items } = useSelector((state) => state.CART);
 	const [totalCartItems, setTotalCartItems] = useState(0);
 	const [subTotal, setSubTotal] = useState(0);
-	const shippingCharges = 50;
+	const [shippingCharges, setShippingCharges] = useState(0);
+	const platformFee = 25.5;
 
 	useEffect(() => {
 		setTotalCartItems(
@@ -33,11 +34,13 @@ const Cart = () => {
 	}, [items]);
 
 	useEffect(() => {
-		setSubTotal(
-			items.reduce((prev, curr) => {
+		setSubTotal((prev) => {
+			const total = items.reduce((prev, curr) => {
 				return prev + curr.price * curr.quantity;
-			}, 0)
-		);
+			}, 0);
+			setShippingCharges(total * 0.05);
+			return total;
+		});
 	}, [items]);
 	return (
 		<SafeAreaView
@@ -87,13 +90,13 @@ const Cart = () => {
 								extraData={items}
 								keyExtractor={(item, index) => item + index}
 								contentContainerStyle={{
-									gap: 10,
+									gap: 20,
 								}}
 								renderItem={({ item, index }) => {
 									return (
 										<View
 											key={index}
-											className='flex flex-col p-2 bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden'>
+											className='flex flex-col p-2 bg-white border border-zinc-200 rounded-xl overflow-hidden'>
 											<View className='flex flex-row'>
 												<TouchableOpacity
 													onPress={() => {
@@ -108,12 +111,12 @@ const Cart = () => {
 														className='rounded-xl'
 														style={{
 															width: 100,
-															height: 120,
+															height: 150,
 														}}
 														source={item.imgSource}
 													/>
 												</TouchableOpacity>
-												<View className='ml-2 justify-between'>
+												<View className='ml-2 justify-between flex-1'>
 													<View>
 														<Text
 															className='text-sm text-zinc-800'
@@ -132,15 +135,18 @@ const Cart = () => {
 															{item.type}
 														</Text>
 														<Text
-															className='text-sm text-zinc-800'
+															className='text-sm text-emerald-500'
 															style={{
 																fontFamily:
 																	'Inter_600SemiBold',
 															}}>
-															₹ {item.price}
+															₹{' '}
+															{parseFloat(
+																item.price
+															).toFixed(2)}
 														</Text>
 													</View>
-													<View className='flex flex-row w-full items-center gap-x-3 justify-center'>
+													<View className='flex flex-row items-center justify-center gap-x-3'>
 														<TouchableOpacity
 															disabled={
 																item.quantity ===
@@ -155,7 +161,7 @@ const Cart = () => {
 																	)
 																);
 															}}
-															className='h-10 w-10 flex items-center justify-center bg-zinc-200 rounded-full'>
+															className='h-10 w-10 flex items-center justify-center bg-zinc-100 rounded-full'>
 															<Icon
 																name='remove-circle-outline'
 																size={24}
@@ -182,7 +188,7 @@ const Cart = () => {
 																	)
 																);
 															}}
-															className='h-10 w-10 flex items-center justify-center bg-zinc-200 rounded-full'>
+															className='h-10 w-10 flex items-center justify-center bg-zinc-100 rounded-full'>
 															<Icon
 																name='add-circle-outline'
 																size={24}
@@ -196,10 +202,11 @@ const Cart = () => {
 																	})
 																);
 															}}
-															className='h-10 w-10 flex items-center justify-center bg-zinc-200 rounded-full'>
+															className='h-10 w-10 flex items-center justify-center bg-zinc-800 rounded-full'>
 															<Icon
 																name='trash-outline'
-																size={20}
+																size={18}
+																color={'#fff'}
 															/>
 														</TouchableOpacity>
 													</View>
@@ -210,40 +217,87 @@ const Cart = () => {
 								}}
 							/>
 						</View>
-						<View className='bg-zinc-100 p-5 rounded-xl mt-5'>
-							<View className='flex flex-row justify-between items-center'>
+						<View className='py-5 mt-5 rounded-xl px-4 flex-row flex justify-between bg-zinc-100'>
+							<View className='flex flex-row justify-center items-center'>
+								<Icon name='bookmark-outline' size={20} />
 								<Text
-									className='text-zinc-500'
+									className='text-sm ml-2'
 									style={{
 										fontFamily: 'Inter_600SemiBold',
+									}}>
+									Apply Coupon
+								</Text>
+							</View>
+							<TouchableOpacity className='flex justify-center items-center'>
+								<Text
+									className='text-sm ml-2'
+									style={{
+										fontFamily: 'Inter_600SemiBold',
+									}}>
+									Select
+								</Text>
+							</TouchableOpacity>
+						</View>
+						<View className='mt-5 items-center'>
+							<Text
+								className='text-xs'
+								style={{
+									fontFamily: 'Inter_400Regular',
+								}}>
+								Assured Quality | 100% Handpicked | Easy
+								Exchange
+							</Text>
+						</View>
+						<View className='bg-zinc-100 p-5 rounded-xl mt-5'>
+							<View className='flex flex-row justify-between items-center mb-1'>
+								<Text
+									className='text-zinc-500 text-sm'
+									style={{
+										fontFamily: 'Inter_400Regular',
 									}}>
 									Subtotal
 								</Text>
 								<Text
-									className='text-zinc-500'
+									className='text-zinc-500 text-sm'
 									style={{
-										fontFamily: 'Inter_600SemiBold',
+										fontFamily: 'Inter_400Regular',
 									}}>
-									₹ {parseInt(subTotal).toFixed(2)}
+									₹ {parseFloat(subTotal).toFixed(2)}
 								</Text>
 							</View>
-							<View className='flex flex-row justify-between items-center'>
+							<View className='flex flex-row justify-between items-center mb-1'>
 								<Text
-									className='text-zinc-500'
+									className='text-zinc-500 text-sm'
 									style={{
-										fontFamily: 'Inter_600SemiBold',
+										fontFamily: 'Inter_400Regular',
 									}}>
 									Shipping Charges
 								</Text>
 								<Text
-									className='text-zinc-500'
+									className='text-zinc-500 text-sm'
 									style={{
-										fontFamily: 'Inter_600SemiBold',
+										fontFamily: 'Inter_400Regular',
 									}}>
-									₹ {parseInt(shippingCharges).toFixed(2)}
+									₹ {parseFloat(shippingCharges).toFixed(2)}
 								</Text>
 							</View>
-							<View className='flex flex-row justify-between items-center mt-3'>
+							<View className='flex flex-row justify-between items-center mb-5'>
+								<Text
+									className='text-zinc-500 text-sm'
+									style={{
+										fontFamily: 'Inter_400Regular',
+									}}>
+									Platform Fee
+								</Text>
+								<Text
+									className='text-zinc-500 text-sm'
+									style={{
+										fontFamily: 'Inter_400Regular',
+									}}>
+									₹ {parseFloat(platformFee).toFixed(2)}
+								</Text>
+							</View>
+							<View className='flex flex-row justify-between items-center'>
 								<Text
 									className='text-zinc-800 text-base'
 									style={{
@@ -257,12 +311,12 @@ const Cart = () => {
 										fontFamily: 'Inter_600SemiBold',
 									}}>
 									₹{' '}
-									{parseInt(
-										subTotal + shippingCharges
+									{parseFloat(
+										subTotal + shippingCharges + platformFee
 									).toFixed(2)}
 								</Text>
 							</View>
-							<TouchableOpacity className='flex items-center justify-center bg-emerald-500 rounded-xl mt-10 py-5'>
+							<TouchableOpacity className='flex items-center justify-center bg-emerald-500 rounded-xl mt-5 py-5'>
 								<Text
 									className='text-white text-base'
 									style={{
@@ -281,7 +335,6 @@ const Cart = () => {
 };
 
 const EmptyCart = () => {
-	const dispatch = useDispatch();
 	return (
 		<View className='h-full w-full flex items-center justify-center bg-white'>
 			<View className='w-3/4 flex flex-col items-center justify-center gap-y-2'>
