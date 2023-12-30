@@ -190,7 +190,7 @@ const ProductsList = () => {
 										style={{
 											fontFamily: 'Inter_600SemiBold',
 										}}>
-										₹ {item.price}
+										₹ {parseInt(item.price).toFixed(2)}
 									</Text>
 									<TouchableOpacity
 										className='h-10 w-10 bg-white border border-zinc-200 rounded-full flex items-center justify-center'
@@ -201,7 +201,7 @@ const ProductsList = () => {
 													? 'cart'
 													: 'add-circle'
 											}
-											size={24}
+											size={isAlreadyInCart ? 20 : 24}
 										/>
 									</TouchableOpacity>
 								</View>
