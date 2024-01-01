@@ -15,7 +15,7 @@ import {
 	removeItem,
 	subtractQuantity,
 } from '../../../redux/reducers/cartSlice';
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -79,6 +79,17 @@ const Cart = () => {
 							</Text>
 						</View>
 					</View>
+					<Link
+						href={'/cart/payment'}
+						className='flex flex-row items-center justify-center bg-zinc-100 rounded-xl mt-5 py-5'>
+						<Text
+							className='text-zinc-800 text-base'
+							style={{
+								fontFamily: 'Inter_600SemiBold',
+							}}>
+							Proceed to Pay
+						</Text>
+					</Link>
 					<ScrollView
 						className='pt-5'
 						scrollEnabled={true}
