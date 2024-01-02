@@ -5,6 +5,9 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
+	Button,
+	Alert,
+	TextInput,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,10 +15,18 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	addQuantity,
+	emptyCart,
 	removeItem,
 	subtractQuantity,
 } from '../../../redux/reducers/cartSlice';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
+import {
+	useConfirmPayment,
+	CardField,
+	useStripe,
+} from '@stripe/stripe-react-native';
+
+const API_URL = 'http://192.168.80.192:3000';
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -23,7 +34,8 @@ const Cart = () => {
 	const [totalCartItems, setTotalCartItems] = useState(0);
 	const [subTotal, setSubTotal] = useState(0);
 	const [shippingCharges, setShippingCharges] = useState(0);
-	const platformFee = 25.5;
+	const platformFee = 30;
+	const [totalAmount, setTotalAmount] = useState(0);
 
 	useEffect(() => {
 		setTotalCartItems(
@@ -31,17 +43,173 @@ const Cart = () => {
 				return prev + curr.quantity;
 			}, 0)
 		);
+		setSubTotal(
+			items.reduce((prev, curr) => {
+				return prev + curr.price * curr.quantity;
+			}, 0)
+		);
 	}, [items]);
 
 	useEffect(() => {
-		setSubTotal((prev) => {
-			const total = items.reduce((prev, curr) => {
-				return prev + curr.price * curr.quantity;
-			}, 0);
-			setShippingCharges(total * 0.05);
-			return total;
-		});
-	}, [items]);
+		setShippingCharges(subTotal * 0.05);
+	}, [subTotal]);
+
+	useEffect(() => {
+		setTotalAmount(subTotal + shippingCharges + platformFee);
+	}, [shippingCharges]);
+
+	const { confirmPayment, loading } = useConfirmPayment();
+	const [email, setEmail] = useState('');
+	const [cardDetails, setCardDetails] = useState(null);
+	const [paymentInProgress, setPaymentInProgress] = useState(false);
+
+	const handlePayPress = async () => {
+		try {
+			// 1. Gather customer billing information (ex. email)
+			if (!cardDetails?.complete || !email) {
+				Alert.alert('Please enter Complete card details and Email');
+				return;
+			}
+
+			// 2. Call `/payment_intents` to create a PaymentIntent
+			const { clientSecret, error } = await fetch(
+				`${API_URL}/payments/create-payment-intent`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						paymentMethodType: 'card',
+						currency: 'INR',
+						amount: totalAmount * 100,
+						email,
+					}),
+				}
+			).then((res) => res.json());
+
+			if (error) {
+				Alert.alert(
+					'Error when creating PaymentIntent',
+					`Error: ${error.message}`
+				);
+				return;
+			}
+
+			// 3. Confirm the PaymentIntent using the card details
+			const { paymentIntent, error: confirmationError } =
+				await confirmPayment(clientSecret, {
+					paymentMethodType: 'Card',
+					paymentMethodData: {
+						billingDetails: {
+							email,
+						},
+					},
+				});
+
+			if (confirmationError) {
+				// Payment confirmation failed - offer to select other payment methods
+				Alert.alert(
+					'Error when confirming payment',
+					`Error message: ${confirmationError.message}`
+				);
+			}
+
+			if (paymentIntent) {
+				// Payment confirmation success
+				Alert.alert(
+					'Payment Successful',
+					`Payment Success for Amount: ${totalAmount}, PaymentID: ${paymentIntent.id}`
+				);
+			}
+		} catch (error) {
+			Alert.alert('Error when processing payment', error.message);
+		}
+	};
+
+	const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+	const fetchPaymentSheetParams = async () => {
+		try {
+			const response = await fetch(`${API_URL}/payments/payment-sheet`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					currency: 'INR',
+					amount: totalAmount * 100,
+				}),
+			});
+			const { clientSecret, ephemeralKey, customer, error } =
+				await response.json();
+
+			if (error) {
+				Alert.alert(
+					'Error fetchPaymentSheetParams',
+					`Error: ${error.message}`
+				);
+				return;
+			}
+
+			return {
+				clientSecret,
+				ephemeralKey,
+				customer,
+			};
+		} catch (error) {
+			Alert.alert('Error fetchPaymentSheetParams', error.message);
+		}
+	};
+
+	const initializePaymentSheet = async () => {
+		try {
+			const { clientSecret, ephemeralKey, customer } =
+				await fetchPaymentSheetParams();
+
+			const { error } = await initPaymentSheet({
+				merchantDisplayName: 'Krish Tak',
+				customerId: customer,
+				customerEphemeralKeySecret: ephemeralKey,
+				paymentIntentClientSecret: clientSecret,
+				// Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+				//methods that complete payment after a delay, like SEPA Debit and Sofort.
+				allowsDelayedPaymentMethods: true,
+				defaultBillingDetails: {
+					email,
+				},
+			});
+			if (error) {
+				Alert.alert(`Error code: ${error.code}`, error.message);
+				return;
+			}
+		} catch (error) {
+			Alert.alert('Error initializePaymentSheet', error.message);
+		}
+	};
+
+	const openPaymentSheet = async () => {
+		try {
+			setPaymentInProgress(true);
+			await initializePaymentSheet();
+			const { error } = await presentPaymentSheet();
+			if (error) {
+				// Alert.alert(`Error code: ${error.code}`, error.message);
+				// console.log(error);
+				return;
+			}
+			dispatch(emptyCart());
+			Alert.alert(
+				'Success',
+				`Payment for ₹${totalAmount} is successful!`
+			);
+		} catch (error) {
+			Alert.alert('Error openPaymentSheet', error.message);
+		} finally {
+			setPaymentInProgress(false);
+		}
+	};
+
 	return (
 		<SafeAreaView
 			className='h-full'
@@ -79,17 +247,6 @@ const Cart = () => {
 							</Text>
 						</View>
 					</View>
-					<Link
-						href={'/cart/payment'}
-						className='flex flex-row items-center justify-center bg-zinc-100 rounded-xl mt-5 py-5'>
-						<Text
-							className='text-zinc-800 text-base'
-							style={{
-								fontFamily: 'Inter_600SemiBold',
-							}}>
-							Proceed to Pay
-						</Text>
-					</Link>
 					<ScrollView
 						className='pt-5'
 						scrollEnabled={true}
@@ -151,10 +308,10 @@ const Cart = () => {
 																fontFamily:
 																	'Inter_600SemiBold',
 															}}>
-															₹{' '}
-															{parseFloat(
-																item.price
-															).toFixed(2)}
+															{'₹' +
+																parseFloat(
+																	item.price
+																).toFixed(2)}
 														</Text>
 													</View>
 													<View className='flex flex-row items-center justify-center gap-x-3'>
@@ -273,7 +430,7 @@ const Cart = () => {
 									style={{
 										fontFamily: 'Inter_400Regular',
 									}}>
-									₹ {parseFloat(subTotal).toFixed(2)}
+									{'₹' + parseFloat(subTotal).toFixed(2)}
 								</Text>
 							</View>
 							<View className='flex flex-row justify-between items-center mb-1'>
@@ -289,7 +446,8 @@ const Cart = () => {
 									style={{
 										fontFamily: 'Inter_400Regular',
 									}}>
-									₹ {parseFloat(shippingCharges).toFixed(2)}
+									{'₹' +
+										parseFloat(shippingCharges).toFixed(2)}
 								</Text>
 							</View>
 							<View className='flex flex-row justify-between items-center mb-5'>
@@ -305,7 +463,7 @@ const Cart = () => {
 									style={{
 										fontFamily: 'Inter_400Regular',
 									}}>
-									₹ {parseFloat(platformFee).toFixed(2)}
+									{'₹' + parseFloat(platformFee).toFixed(2)}
 								</Text>
 							</View>
 							<View className='flex flex-row justify-between items-center'>
@@ -321,13 +479,22 @@ const Cart = () => {
 									style={{
 										fontFamily: 'Inter_600SemiBold',
 									}}>
-									₹{' '}
-									{parseFloat(
-										subTotal + shippingCharges + platformFee
-									).toFixed(2)}
+									{'₹' +
+										parseFloat(
+											subTotal +
+												shippingCharges +
+												platformFee
+										).toFixed(2)}
 								</Text>
 							</View>
-							<TouchableOpacity className='flex items-center justify-center bg-emerald-500 rounded-xl mt-5 py-5'>
+							<TouchableOpacity
+								disabled={paymentInProgress}
+								onPress={openPaymentSheet}
+								className={`flex items-center justify-center ${
+									paymentInProgress
+										? 'bg-zinc-300'
+										: 'bg-emerald-500'
+								} rounded-xl mt-5 py-5`}>
 								<Text
 									className='text-white text-base'
 									style={{
@@ -337,6 +504,63 @@ const Cart = () => {
 								</Text>
 							</TouchableOpacity>
 						</View>
+						{/* <View
+							style={{
+								flex: 1,
+								justifyContent: 'center',
+							}}>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: '600',
+									marginBottom: 20,
+								}}>
+								Email
+							</Text>
+							<TextInput
+								autoCompleteType='email'
+								keyboardType='email-address'
+								onChangeText={(text) => setEmail(text)}
+								placeholder='Email'
+								returnKeyType='next'
+								textContentType='emailAddress'
+								value={email}
+							/>
+							<Text
+								style={{
+									fontSize: 20,
+									fontWeight: '600',
+									marginTop: 20,
+								}}>
+								Card
+							</Text>
+							<CardField
+								postalCodeEnabled={true}
+								placeholder={{
+									number: '4242 4242 4242 4242',
+								}}
+								cardStyle={{
+									backgroundColor: '#FFFFFF',
+									borderColor: '#000000',
+									borderRadius: 10,
+									borderWidth: 1,
+								}}
+								style={{
+									height: 50,
+									marginTop: 20,
+								}}
+								onCardChange={(cardDetails) => {
+									setCardDetails(cardDetails);
+								}}
+							/>
+							<Button
+								disabled={
+									!email || !cardDetails?.complete || loading
+								}
+								onPress={handlePayPress}
+								title='Pay'
+							/>
+						</View> */}
 						<View className='h-40'></View>
 					</ScrollView>
 				</View>
