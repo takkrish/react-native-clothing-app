@@ -1,68 +1,168 @@
 import { Alert, Button, StyleSheet, Text, TextInput, View } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useConfirmPayment, CardField } from '@stripe/stripe-react-native';
+import {
+	useConfirmPayment,
+	CardField,
+	useStripe,
+} from '@stripe/stripe-react-native';
+import { useLocalSearchParams } from 'expo-router';
+
+const API_URL = 'http://192.168.80.192:3000';
 
 const Payment = () => {
 	const { confirmPayment, loading } = useConfirmPayment();
-	const [email, setEmail] = React.useState('');
-	const [cardDetails, setCardDetails] = React.useState(null);
+	const [email, setEmail] = useState('');
+	const [cardDetails, setCardDetails] = useState(null);
+	const params = useLocalSearchParams();
+	const [totalAmount, setTotalAmount] = useState(
+		parseFloat(parseFloat(params.totalAmount).toFixed(2))
+	);
 
 	const handlePayPress = async () => {
-		// 1. Gather customer billing information (ex. email)
-		if (!cardDetails?.complete || !email) {
-			Alert.alert('Please enter Complete card details and Email');
-			return;
-		}
+		try {
+			// 1. Gather customer billing information (ex. email)
+			if (!cardDetails?.complete || !email) {
+				Alert.alert('Please enter Complete card details and Email');
+				return;
+			}
 
-		// 2. Call `/payment_intents` to create a PaymentIntent
-		const { clientSecret, error } = await fetch(
-			'http://localhost:3000/payments/create-payment-intent',
-			{
+			// 2. Call `/payment_intents` to create a PaymentIntent
+			const { clientSecret, error } = await fetch(
+				`${API_URL}/payments/create-payment-intent`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						paymentMethodType: 'card',
+						currency: 'INR',
+						amount: totalAmount * 100,
+						email,
+					}),
+				}
+			).then((res) => res.json());
+
+			if (error) {
+				Alert.alert(
+					'Error when creating PaymentIntent',
+					`Error: ${error.message}`
+				);
+				return;
+			}
+
+			// 3. Confirm the PaymentIntent using the card details
+			const { paymentIntent, error: confirmationError } =
+				await confirmPayment(clientSecret, {
+					paymentMethodType: 'Card',
+					paymentMethodData: {
+						billingDetails: {
+							email,
+						},
+					},
+				});
+
+			if (confirmationError) {
+				// Payment confirmation failed - offer to select other payment methods
+				Alert.alert(
+					'Error when confirming payment',
+					`Error message: ${confirmationError.message}`
+				);
+			}
+
+			if (paymentIntent) {
+				// Payment confirmation success
+				Alert.alert(
+					'Payment Successful',
+					`Payment Success for Amount: ${totalAmount}, PaymentID: ${paymentIntent.id}`
+				);
+			}
+		} catch (error) {
+			Alert.alert('Error when processing payment', error.message);
+		}
+	};
+
+	const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+	const fetchPaymentSheetParams = async () => {
+		try {
+			const response = await fetch(`${API_URL}/payments/payment-sheet`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					paymentMethodType: 'card',
 					currency: 'INR',
-					amount: 5000,
-					email,
+					amount: totalAmount * 100,
 				}),
+			});
+			const { clientSecret, ephemeralKey, customer, error } =
+				await response.json();
+
+			if (error) {
+				Alert.alert(
+					'Error fetchPaymentSheetParams',
+					`Error: ${error.message}`
+				);
+				return;
 			}
-		).then((res) => res.json());
 
-		if (error) {
-			console.log('error', error);
-			Alert.alert('Error when creating PaymentIntent', `Error: ${error}`);
-			return;
+			return {
+				clientSecret,
+				ephemeralKey,
+				customer,
+			};
+		} catch (error) {
+			Alert.alert('Error fetchPaymentSheetParams', error.message);
 		}
+	};
 
-		// 3. Confirm the PaymentIntent using the card details
-		const { paymentIntent, error: confirmationError } =
-			await confirmPayment(clientSecret, {
-				type: 'Card',
-				billingDetails: {
-					email: email,
+	const initializePaymentSheet = async () => {
+		try {
+			const { clientSecret, ephemeralKey, customer } =
+				await fetchPaymentSheetParams();
+
+			const { error } = await initPaymentSheet({
+				merchantDisplayName: 'Krish Tak',
+				customerId: customer,
+				customerEphemeralKeySecret: ephemeralKey,
+				paymentIntentClientSecret: clientSecret,
+				// Set `allowsDelayedPaymentMethods` to true if your business can handle payment
+				//methods that complete payment after a delay, like SEPA Debit and Sofort.
+				allowsDelayedPaymentMethods: true,
+				defaultBillingDetails: {
+					email,
 				},
 			});
-
-		if (confirmationError) {
-			// Payment confirmation failed - offer to select other payment methods
-			console.log('confirmationError', confirmationError);
-			Alert.alert(
-				'Error when confirming payment',
-				`Error message: ${confirmationError.message}`
-			);
+			if (error) {
+				Alert.alert(`Error code: ${error.code}`, error.message);
+				return;
+			}
+		} catch (error) {
+			Alert.alert('Error initializePaymentSheet', error.message);
 		}
+	};
 
-		if (paymentIntent) {
-			// Payment confirmation success
-			console.log('Payment Successful', paymentIntent);
+	useEffect(() => {
+		initializePaymentSheet();
+	}, [totalAmount]);
+
+	const openPaymentSheet = async () => {
+		try {
+			const { error } = await presentPaymentSheet();
+
+			if (error) {
+				Alert.alert(`Error code: ${error.code}`, error.message);
+				return;
+			}
+
 			Alert.alert(
-				'Payment Successful',
-				`Payment Success ${paymentIntent.id}`
+				'Success',
+				`Payment for ₹${totalAmount} is successful!`
 			);
+		} catch (error) {
+			Alert.alert('Error openPaymentSheet', error.message);
 		}
 	};
 
@@ -126,6 +226,12 @@ const Payment = () => {
 					disabled={!email || !cardDetails?.complete || loading}
 					onPress={handlePayPress}
 					title='Pay'
+				/>
+				<Button
+					// variant='primary'
+					// disabled={!loading}
+					title='Checkout'
+					onPress={openPaymentSheet}
 				/>
 			</View>
 		</SafeAreaView>

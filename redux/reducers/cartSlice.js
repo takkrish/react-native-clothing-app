@@ -14,6 +14,9 @@ const CartSlice = createSlice({
 				(item) => item.id !== action.payload.id
 			);
 		},
+		emptyCart: (state) => {
+			state.items = [];
+		},
 		addQuantity: (state, action) => {
 			state.items = state.items.map((item) => {
 				if (item.id === action.payload.id) {
@@ -33,7 +36,7 @@ const CartSlice = createSlice({
 	},
 });
 
-export const { addItem, removeItem, addQuantity, subtractQuantity } =
+export const { addItem, removeItem, emptyCart, addQuantity, subtractQuantity } =
 	CartSlice.actions;
 
 export default CartSlice.reducer;

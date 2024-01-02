@@ -107,6 +107,18 @@ export const productsData = [
 		size: 'M',
 		gender: ['Male', 'Kids'],
 	},
+	{
+		id: 10,
+		name: 'Gift',
+		description:
+			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
+		imgSource: require('../assets//gift.jpg'),
+		price: 1,
+		quantity: 1,
+		type: 'Gift',
+		size: 'M',
+		gender: ['Male', 'Kids'],
+	},
 ];
 
 // const result = productsData
