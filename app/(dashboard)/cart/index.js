@@ -26,7 +26,7 @@ import {
 	useStripe,
 } from '@stripe/stripe-react-native';
 
-const API_URL = 'http://192.168.80.192:3000';
+import { API_URL } from '@env';
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -34,7 +34,7 @@ const Cart = () => {
 	const [totalCartItems, setTotalCartItems] = useState(0);
 	const [subTotal, setSubTotal] = useState(0);
 	const [shippingCharges, setShippingCharges] = useState(0);
-	const platformFee = 30;
+	const platformFee = 25;
 	const [totalAmount, setTotalAmount] = useState(0);
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ const Cart = () => {
 	}, [items]);
 
 	useEffect(() => {
-		setShippingCharges(subTotal * 0.05);
+		setShippingCharges(subTotal * 0.025);
 	}, [subTotal]);
 
 	useEffect(() => {
@@ -59,7 +59,7 @@ const Cart = () => {
 	}, [shippingCharges]);
 
 	const { confirmPayment, loading } = useConfirmPayment();
-	const [email, setEmail] = useState('');
+	const [email, setEmail] = useState('takrishtak2002@gmail.com');
 	const [cardDetails, setCardDetails] = useState(null);
 	const [paymentInProgress, setPaymentInProgress] = useState(false);
 
@@ -82,7 +82,9 @@ const Cart = () => {
 					body: JSON.stringify({
 						paymentMethodType: 'card',
 						currency: 'INR',
-						amount: totalAmount * 100,
+						amount:
+							parseFloat(parseFloat(totalAmount).toFixed(2)) *
+							100,
 						email,
 					}),
 				}
@@ -138,7 +140,8 @@ const Cart = () => {
 				},
 				body: JSON.stringify({
 					currency: 'INR',
-					amount: totalAmount * 100,
+					amount:
+						parseFloat(parseFloat(totalAmount).toFixed(2)) * 100,
 				}),
 			});
 			const { clientSecret, ephemeralKey, customer, error } =

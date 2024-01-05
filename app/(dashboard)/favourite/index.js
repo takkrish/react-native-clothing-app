@@ -12,10 +12,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFavourite } from '../../../redux/reducers/favouriteSlice';
 import { router } from 'expo-router';
+import { Dimensions } from 'react-native';
 
 const Favourite = () => {
 	const dispatch = useDispatch();
 	const { favourites } = useSelector((state) => state.FAVOURITE);
+	const { width } = Dimensions.get('window');
 	return (
 		<SafeAreaView
 			className='h-full'
@@ -33,7 +35,7 @@ const Favourite = () => {
 							style={{
 								fontFamily: 'Inter_600SemiBold',
 							}}>
-							Your Favourites
+							My Favourites
 						</Text>
 						<View className='bg-zinc-100 rounded-full p-2 flex flex-row items-center'>
 							<View className='bg-zinc-200 rounded-full border border-zinc-400 h-8 w-8  flex items-center justify-center'>
@@ -63,79 +65,85 @@ const Favourite = () => {
 							<FlatList
 								scrollEnabled={false}
 								data={favourites}
-								extraData={favourites}
-								keyExtractor={(item, index) => item + index}
+								keyExtractor={(item) => item.id}
+								numColumns={2}
 								contentContainerStyle={{
+									gap: 10,
+								}}
+								columnWrapperStyle={{
 									gap: 10,
 								}}
 								renderItem={({ item, index }) => {
 									return (
 										<View
-											key={index}
-											className='flex p-2 flex-row bg-zinc-50 border border-zinc-200 rounded-xl overflow-hidden'>
+											className='flex flex-col justify-center items-center bg-zinc-100 rounded-xl overflow-hidden'
+											key={index}>
 											<TouchableOpacity
-												onPress={() => {
+												onPress={() =>
 													router.push(
-														'/product/' + item.id
-													);
-												}}
-												className='flex'>
+														'product/' + item.id
+													)
+												}>
 												<Image
-													className='rounded-xl'
-													style={{
-														width: 100,
-														height: 120,
-													}}
 													source={item.imgSource}
+													style={{
+														width: width / 2 - 25,
+														height: 250,
+													}}
 												/>
+												<View className='p-2'>
+													<Text
+														className='text-xs'
+														style={{
+															fontFamily:
+																'Inter_600SemiBold',
+														}}>
+														{item.name}
+													</Text>
+													<Text
+														className='text-xs'
+														style={{
+															fontFamily:
+																'Inter_400Regular',
+														}}>
+														{item.type}
+													</Text>
+													<View className='flex flex-row justify-between items-center'>
+														<Text
+															style={{
+																fontFamily:
+																	'Inter_600SemiBold',
+															}}>
+															₹{' '}
+															{parseInt(
+																item.price
+															).toFixed(2)}
+														</Text>
+														<TouchableOpacity
+															className='h-10 w-10 bg-white border border-zinc-200 rounded-full flex items-center justify-center'
+															onPress={() =>
+																router.push(
+																	'product/' +
+																		item.id
+																)
+															}>
+															<Icon
+																name={
+																	'arrow-forward-circle'
+																}
+																size={24}
+															/>
+														</TouchableOpacity>
+													</View>
+												</View>
 											</TouchableOpacity>
-											<View className='ml-3'>
-												<Text
-													className='text-base text-zinc-800'
-													style={{
-														fontFamily:
-															'Inter_600SemiBold',
-													}}>
-													{item.name}
-												</Text>
-												<Text
-													className='text-sm text-zinc-600'
-													style={{
-														fontFamily:
-															'Inter_400Regular',
-													}}>
-													{item.type}
-												</Text>
-												<Text
-													className='text-sm text-zinc-600'
-													style={{
-														fontFamily:
-															'Inter_400Regular',
-													}}>
-													₹ {item.price}
-												</Text>
-												<TouchableOpacity
-													className='flex items-center justify-center bg-zinc-100 rounded-full w-10 h-10 mt-2'
-													onPress={() => {
-														dispatch(
-															removeFavourite({
-																id: item.id,
-															})
-														);
-													}}>
-													<Icon
-														name='trash-outline'
-														size={20}
-													/>
-												</TouchableOpacity>
-											</View>
 										</View>
 									);
 								}}
 							/>
 						</View>
 						<View></View>
-						<View className='h-60'></View>
+						<View className='h-36'></View>
 					</ScrollView>
 				</View>
 			)}

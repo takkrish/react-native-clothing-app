@@ -8,19 +8,34 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { addItem } from '../../../redux/reducers/cartSlice';
 import { productsData } from '../../../constants/productsData';
+import { categories, categoriesArray } from '../../../constants/categories';
 
 const { width } = Dimensions.get('window');
 
 const App = () => {
 	const { user } = useSelector((state) => state.USER);
-	const [selectedCategory, setSelectedCategory] = useState('All');
+	const [productItems, setProductItems] = useState(productsData);
+	const [selectedCategory, setSelectedCategory] = useState(categories.all);
+
+	useEffect(() => {
+		if (selectedCategory === categories.all) {
+			setProductItems(productsData);
+		} else {
+			setProductItems(
+				productsData.filter((item) =>
+					item.gender.includes(selectedCategory)
+				)
+			);
+		}
+	}, [selectedCategory]);
+
 	return (
 		<SafeAreaView
 			style={{
@@ -83,38 +98,17 @@ const App = () => {
 						}}
 						showsHorizontalScrollIndicator={false}
 						horizontal
-						data={[
-							{
-								id: 1,
-								type: 'All',
-							},
-							{
-								id: 2,
-								type: 'Men',
-							},
-							{
-								id: 3,
-								type: 'Women',
-							},
-							{
-								id: 4,
-								type: 'Kids',
-							},
-							{
-								id: 5,
-								type: 'Sale',
-							},
-						]}
-						keyExtractor={(item) => item.id}
-						renderItem={({ item }) => (
+						data={categoriesArray}
+						keyExtractor={(item, index) => index}
+						renderItem={({ item, index }) => (
 							<TouchableOpacity
-								key={item.id}
+								key={index}
 								activeOpacity={0.5}
 								onPress={() => {
-									setSelectedCategory(item.type);
+									setSelectedCategory(item.name);
 								}}
 								className={`flex flex-row items-center bg-zinc-100 rounded-full py-2 px-3 ${
-									selectedCategory === item.type &&
+									selectedCategory === item.name &&
 									'bg-zinc-300 border border-zinc-400'
 								}`}>
 								<Text
@@ -122,20 +116,20 @@ const App = () => {
 									style={{
 										fontFamily: 'Inter_400Regular',
 									}}>
-									{item.type}
+									{item.name}
 								</Text>
 							</TouchableOpacity>
 						)}
 					/>
 				</View>
-				<ProductsList />
+				<ProductsList productItems={productItems} />
 				<View className='h-10'></View>
 			</ScrollView>
 		</SafeAreaView>
 	);
 };
 
-const ProductsList = () => {
+const ProductsList = ({ productItems }) => {
 	const dispatch = useDispatch();
 	const { items } = useSelector((state) => state.CART);
 
@@ -147,7 +141,8 @@ const ProductsList = () => {
 	return (
 		<FlatList
 			scrollEnabled={false}
-			data={productsData}
+			data={productItems}
+			keyExtractor={(item) => item.id}
 			numColumns={2}
 			contentContainerStyle={{
 				gap: 10,
