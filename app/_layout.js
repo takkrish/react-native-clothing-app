@@ -20,7 +20,12 @@ const RootLayout = () => {
 							<Stack.Screen name='index' />
 							<Stack.Screen name='(auth)' />
 							<Stack.Screen name='(dashboard)' />
-							<Stack.Screen name='(product)/product/[productID]' />
+							<Stack.Screen
+								name='(product)/product/[productID]'
+								options={{
+									animation: 'slide_from_bottom',
+								}}
+							/>
 						</Stack>
 					</RootSiblingParent>
 				</StripeProvider>

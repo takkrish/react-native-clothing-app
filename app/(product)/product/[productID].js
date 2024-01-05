@@ -7,8 +7,10 @@ import {
 	TextInput,
 	Image,
 	Dimensions,
+	Animated,
+	Modal,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -20,7 +22,20 @@ import {
 	addFavourite,
 	removeFavourite,
 } from '../../../redux/reducers/favouriteSlice';
+import { addItem } from '../../../redux/reducers/cartSlice';
 import { productsData } from '../../../constants/productsData';
+import {
+	PinchGestureHandler,
+	PanGestureHandler,
+	Gesture,
+	GestureDetector,
+	State,
+	GestureHandlerRootView,
+} from 'react-native-gesture-handler';
+// import Animated, {
+// 	useSharedValue,
+// 	useAnimatedStyle,
+// } from 'react-native-reanimated';
 
 const { width } = Dimensions.get('window');
 
@@ -35,23 +50,67 @@ const bankOffers = [
 
 const ProductID = () => {
 	const { productID } = useLocalSearchParams();
+	const product = productsData.find(
+		(item) => item.id === parseInt(productID)
+	);
 	const dispatch = useDispatch();
 	const { favourites } = useSelector((state) => state.FAVOURITE);
-	const [favourite, setFavourite] = useState(false);
+	const { items } = useSelector((state) => state.CART);
+	const [favourite, setFavourite] = useState(favourites.includes(product));
 	const [size, setSize] = useState('M');
 	const [color, setColor] = useState('Blue');
+	const [visible, setVisible] = useState(false);
 
-	useEffect(() => {
-		const isFavourite = favourites.find(
-			(item) => item.id === parseInt(productID)
-		);
-		setFavourite(isFavourite ? true : false);
-	}, []);
+	const scale = useRef(new Animated.Value(1)).current;
+	const translateX = useRef(new Animated.Value(0)).current;
+	const translateY = useRef(new Animated.Value(0)).current;
+
+	const pinchRef = createRef();
+	const panRef = createRef();
+
+	const onPinchGestureEvent = Animated.event(
+		[{ nativeEvent: { scale: scale } }],
+		{ useNativeDriver: true }
+	);
+
+	const onPanGestureEvent = Animated.event(
+		[
+			{
+				nativeEvent: {
+					translationX: translateX,
+					translationY: translateY,
+				},
+			},
+		],
+		{ useNativeDriver: true }
+	);
+
+	const handlePinchStateChange = ({ nativeEvent }) => {
+		if (nativeEvent.oldState === State.ACTIVE) {
+			Animated.spring(scale, {
+				toValue: 1,
+				bounciness: 10,
+				useNativeDriver: true,
+			}).start();
+		}
+	};
+
+	const handlePanStateChange = ({ nativeEvent }) => {
+		if (nativeEvent.oldState === State.ACTIVE) {
+			Animated.spring(translateX, {
+				toValue: 0,
+				bounciness: 5,
+				useNativeDriver: true,
+			}).start();
+			Animated.spring(translateY, {
+				toValue: 0,
+				bounciness: 5,
+				useNativeDriver: true,
+			}).start();
+		}
+	};
 
 	const handleFavourite = () => {
-		const product = productsData.find(
-			(item) => item.id === parseInt(productID)
-		);
 		setFavourite((prev) => {
 			!prev
 				? dispatch(addFavourite(product))
@@ -101,7 +160,55 @@ const ProductID = () => {
 			<ScrollView
 				className='flex flex-col gap-y-8 mt-0'
 				showsVerticalScrollIndicator={false}>
-				<ProductImageSlider />
+				<ProductImageSlider
+					imgSource={product.imgSource}
+					setVisible={setVisible}
+				/>
+				<Modal
+					visible={visible}
+					transparent={true}
+					onRequestClose={() => setVisible(false)}
+					animationType='fade'>
+					<View className='p-4 w-full h-full pointer-events-auto bg-black/80'>
+						<TouchableOpacity
+							activeOpacity={0.8}
+							className='bg-zinc-50 rounded-full h-10 w-10 items-center justify-center flex self-end'
+							onPress={() => setVisible(false)}>
+							<Icon name='close' size={24} />
+						</TouchableOpacity>
+						<GestureHandlerRootView>
+							<PanGestureHandler
+								onGestureEvent={onPanGestureEvent}
+								onHandlerStateChange={handlePanStateChange}
+								ref={panRef}
+								simultaneousHandlers={[pinchRef]}>
+								<Animated.View>
+									<PinchGestureHandler
+										ref={pinchRef}
+										onGestureEvent={onPinchGestureEvent}
+										simultaneousHandlers={[panRef]}
+										onHandlerStateChange={
+											handlePinchStateChange
+										}>
+										<Animated.Image
+											source={product.imgSource}
+											style={{
+												width: '100%',
+												height: '100%',
+												transform: [
+													{ scale },
+													{ translateX },
+													{ translateY },
+												],
+											}}
+											resizeMode='contain'
+										/>
+									</PinchGestureHandler>
+								</Animated.View>
+							</PanGestureHandler>
+						</GestureHandlerRootView>
+					</View>
+				</Modal>
 				<View className='flex flex-row justify-between items-center'>
 					<View className='flex flex-col'>
 						<Text
@@ -109,14 +216,14 @@ const ProductID = () => {
 							style={{
 								fontFamily: 'Inter_600SemiBold',
 							}}>
-							Avocado
+							{product.name}
 						</Text>
 						<Text
 							className='text-sm'
 							style={{
 								fontFamily: 'Inter_400Regular',
 							}}>
-							Jacket
+							{product.type}
 						</Text>
 					</View>
 					<View className='flex flex-row items-center justify-center gap-x-2'>
@@ -362,22 +469,7 @@ const ProductID = () => {
 							style={{
 								fontFamily: 'Inter_400Regular',
 							}}>
-							Lorem ipsum, dolor sit amet consectetur adipisicing
-							elit. Quia veritatis qui enim iure laboriosam
-							expedita officia fugit est, quisquam ab temporibus
-							nulla placeat, veniam incidunt vel voluptatum error
-							nihil dolor. Dignissimos aut nemo voluptatem commodi
-							harum accusantium velit odio fugit tempore suscipit
-							vero asperiores voluptatum consequatur sapiente
-							illum esse deleniti magnam beatae, repudiandae quae
-							laborum! Deleniti architecto laborum, sapiente aut,
-							repellat similique magni distinctio, ullam
-							asperiores nostrum repudiandae veniam? Omnis,
-							nesciunt minus nihil laborum, nobis veritatis neque
-							laboriosam ad impedit rem aspernatur nostrum earum
-							dolor ducimus quo tenetur, officia dolore doloribus
-							ipsum. Pariatur necessitatibus libero placeat omnis.
-							Nihil, quae? Corporis.
+							{product.description}
 						</Text>
 					</ReadMore>
 				</View>
@@ -493,7 +585,6 @@ const ProductID = () => {
 				</View>
 				<View className='h-5'></View>
 			</ScrollView>
-			{/* <KeyboardAvoidingView enabled={false} behavior='height'> */}
 			<View
 				className='w-screen py-3
 			 flex flex-row bottom-0 bg-zinc-100 self-center justify-around items-center'>
@@ -504,33 +595,44 @@ const ProductID = () => {
 					<Text
 						className='text-lg'
 						style={{ fontFamily: 'Inter_600SemiBold' }}>
-						₹ 1099.00
+						{'₹' + parseFloat(product.price).toFixed(2)}
 					</Text>
 				</View>
-				<TouchableOpacity
-					// onPress={() => dispatch(add)}
-					className='flex items-center justify-center bg-emerald-500 rounded-xl px-10 py-5'>
-					<Text
-						className='text-white'
-						style={{
-							fontFamily: 'Inter_600SemiBold',
-						}}>
-						Add to Cart
-					</Text>
-				</TouchableOpacity>
+				{items.find((item) => item.id === parseInt(productID)) ? (
+					<TouchableOpacity
+						onPress={() => router.push('/cart')}
+						className='flex items-center justify-center bg-emerald-500 rounded-xl px-10 py-5'>
+						<Text
+							className='text-white'
+							style={{
+								fontFamily: 'Inter_600SemiBold',
+							}}>
+							Go to Cart
+						</Text>
+					</TouchableOpacity>
+				) : (
+					<TouchableOpacity
+						onPress={() => {
+							dispatch(addItem(product));
+						}}
+						className='flex items-center justify-center bg-emerald-500 rounded-xl px-10 py-5'>
+						<Text
+							className='text-white'
+							style={{
+								fontFamily: 'Inter_600SemiBold',
+							}}>
+							Add to Cart
+						</Text>
+					</TouchableOpacity>
+				)}
 			</View>
-			{/* </KeyboardAvoidingView> */}
 		</SafeAreaView>
 	);
 };
 
-const ProductImageSlider = () => {
+const ProductImageSlider = ({ imgSource, setVisible }) => {
 	const [left, setLeft] = useState(0);
-	const { productID } = useLocalSearchParams();
-	const product = productsData.find(
-		(item) => item.id === parseInt(productID)
-	);
-	const data = Array(5).fill(product.imgSource);
+	const data = Array(5).fill(imgSource);
 	return (
 		<View className='rounded-xl overflow-hidden flex items-center justify-center relative'>
 			<FlatList
@@ -553,16 +655,18 @@ const ProductImageSlider = () => {
 				}}
 				renderItem={({ item, index }) => {
 					return (
-						<Image
-							key={index}
-							source={item}
-							resizeMethod='resize'
-							resizeMode='contain'
-							style={{
-								height: 350,
-								width: width - 40,
-							}}
-						/>
+						<TouchableOpacity onPress={() => setVisible(true)}>
+							<Image
+								key={index}
+								source={item}
+								resizeMethod='resize'
+								resizeMode='contain'
+								style={{
+									height: 350,
+									width: width - 40,
+								}}
+							/>
+						</TouchableOpacity>
 					);
 				}}
 			/>
