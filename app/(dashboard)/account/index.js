@@ -1,12 +1,11 @@
 import { View, Text, TouchableOpacity, Image, Modal } from 'react-native';
 import React from 'react';
-import { signOut } from 'firebase/auth';
-import { AUTH } from '../../../firebase/config';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Account = () => {
 	const { user } = useSelector((state) => state.USER);
@@ -43,7 +42,7 @@ const Account = () => {
 					<Image
 						className='rounded-full'
 						source={{
-							uri: user.photoURL,
+							uri: user.photo,
 						}}
 						style={{
 							height: 300,
@@ -61,7 +60,7 @@ const Account = () => {
 					<Image
 						className='rounded-full'
 						resizeMode='cover'
-						source={{ uri: user.photoURL }}
+						source={{ uri: user.photo }}
 						style={{
 							height: 100,
 							width: 100,
@@ -74,7 +73,7 @@ const Account = () => {
 						style={{
 							fontFamily: 'Inter_600SemiBold',
 						}}>
-						{user.displayName}
+						{user.name}
 					</Text>
 					<Text
 						className='text-xs'
@@ -123,7 +122,7 @@ const Account = () => {
 			</TouchableOpacity>
 			<TouchableOpacity
 				onPress={async () => {
-					await signOut(AUTH);
+					await GoogleSignin.signOut();
 					await AsyncStorage.removeItem('persist:root');
 					router.replace('(auth)');
 				}}>

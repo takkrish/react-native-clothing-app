@@ -122,16 +122,17 @@ const Favourite = () => {
 														<TouchableOpacity
 															className='h-10 w-10 bg-white border border-zinc-200 rounded-full flex items-center justify-center'
 															onPress={() =>
-																router.push(
-																	'product/' +
-																		item.id
+																dispatch(
+																	removeFavourite(
+																		{
+																			id: item.id,
+																		}
+																	)
 																)
 															}>
 															<Icon
-																name={
-																	'arrow-forward-circle'
-																}
-																size={24}
+																name={'trash'}
+																size={20}
 															/>
 														</TouchableOpacity>
 													</View>
