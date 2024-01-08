@@ -5,7 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { signOut } from 'firebase/auth';
+import { AUTH } from '../../../firebase/config';
 
 const Account = () => {
 	const { user } = useSelector((state) => state.USER);
@@ -42,7 +43,7 @@ const Account = () => {
 					<Image
 						className='rounded-full'
 						source={{
-							uri: user.photo,
+							uri: user.photoURL,
 						}}
 						style={{
 							height: 300,
@@ -60,7 +61,7 @@ const Account = () => {
 					<Image
 						className='rounded-full'
 						resizeMode='cover'
-						source={{ uri: user.photo }}
+						source={{ uri: user.photoURL }}
 						style={{
 							height: 100,
 							width: 100,
@@ -73,7 +74,7 @@ const Account = () => {
 						style={{
 							fontFamily: 'Inter_600SemiBold',
 						}}>
-						{user.name}
+						{user.displayName}
 					</Text>
 					<Text
 						className='text-xs'
@@ -84,7 +85,10 @@ const Account = () => {
 					</Text>
 				</View>
 			</View>
-			<TouchableOpacity>
+			<TouchableOpacity
+				onPress={() => {
+					router.push('(orders)/orders');
+				}}>
 				<View className='flex flex-row items-center justify-start mt-4'>
 					<Icon name='person-outline' size={20} color='#000' />
 					<Text
@@ -122,7 +126,7 @@ const Account = () => {
 			</TouchableOpacity>
 			<TouchableOpacity
 				onPress={async () => {
-					await GoogleSignin.signOut();
+					await signOut(AUTH);
 					await AsyncStorage.removeItem('persist:root');
 					router.replace('(auth)');
 				}}>

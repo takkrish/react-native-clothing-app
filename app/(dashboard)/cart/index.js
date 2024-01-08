@@ -19,6 +19,7 @@ import {
 	removeItem,
 	subtractQuantity,
 } from '../../../redux/reducers/cartSlice';
+import { newOrder } from '../../../redux/reducers/orderSlice';
 import { router } from 'expo-router';
 import {
 	useConfirmPayment,
@@ -58,76 +59,76 @@ const Cart = () => {
 		setTotalAmount(subTotal + shippingCharges + platformFee);
 	}, [shippingCharges]);
 
-	const { confirmPayment, loading } = useConfirmPayment();
+	// const { confirmPayment, loading } = useConfirmPayment();
 	const [email, setEmail] = useState('takrishtak2002@gmail.com');
-	const [cardDetails, setCardDetails] = useState(null);
+	// const [cardDetails, setCardDetails] = useState(null);
 	const [paymentInProgress, setPaymentInProgress] = useState(false);
 
-	const handlePayPress = async () => {
-		try {
-			// 1. Gather customer billing information (ex. email)
-			if (!cardDetails?.complete || !email) {
-				Alert.alert('Please enter Complete card details and Email');
-				return;
-			}
+	// const handlePayPress = async () => {
+	// 	try {
+	// 		// 1. Gather customer billing information (ex. email)
+	// 		if (!cardDetails?.complete || !email) {
+	// 			Alert.alert('Please enter Complete card details and Email');
+	// 			return;
+	// 		}
 
-			// 2. Call `/payment_intents` to create a PaymentIntent
-			const { clientSecret, error } = await fetch(
-				`${API_URL}/payments/create-payment-intent`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						paymentMethodType: 'card',
-						currency: 'INR',
-						amount:
-							parseFloat(parseFloat(totalAmount).toFixed(2)) *
-							100,
-						email,
-					}),
-				}
-			).then((res) => res.json());
+	// 		// 2. Call `/payment_intents` to create a PaymentIntent
+	// 		const { clientSecret, error } = await fetch(
+	// 			`${API_URL}/payments/create-payment-intent`,
+	// 			{
+	// 				method: 'POST',
+	// 				headers: {
+	// 					'Content-Type': 'application/json',
+	// 				},
+	// 				body: JSON.stringify({
+	// 					paymentMethodType: 'card',
+	// 					currency: 'INR',
+	// 					amount:
+	// 						Math.round(totalAmount * 100) *
+	// 						100,
+	// 					email,
+	// 				}),
+	// 			}
+	// 		).then((res) => res.json());
 
-			if (error) {
-				Alert.alert(
-					'Error when creating PaymentIntent',
-					`Error: ${error.message}`
-				);
-				return;
-			}
+	// 		if (error) {
+	// 			Alert.alert(
+	// 				'Error when creating PaymentIntent',
+	// 				`Error: ${error.message}`
+	// 			);
+	// 			return;
+	// 		}
 
-			// 3. Confirm the PaymentIntent using the card details
-			const { paymentIntent, error: confirmationError } =
-				await confirmPayment(clientSecret, {
-					paymentMethodType: 'Card',
-					paymentMethodData: {
-						billingDetails: {
-							email,
-						},
-					},
-				});
+	// 		// 3. Confirm the PaymentIntent using the card details
+	// 		const { paymentIntent, error: confirmationError } =
+	// 			await confirmPayment(clientSecret, {
+	// 				paymentMethodType: 'Card',
+	// 				paymentMethodData: {
+	// 					billingDetails: {
+	// 						email,
+	// 					},
+	// 				},
+	// 			});
 
-			if (confirmationError) {
-				// Payment confirmation failed - offer to select other payment methods
-				Alert.alert(
-					'Error when confirming payment',
-					`Error message: ${confirmationError.message}`
-				);
-			}
+	// 		if (confirmationError) {
+	// 			// Payment confirmation failed - offer to select other payment methods
+	// 			Alert.alert(
+	// 				'Error when confirming payment',
+	// 				`Error message: ${confirmationError.message}`
+	// 			);
+	// 		}
 
-			if (paymentIntent) {
-				// Payment confirmation success
-				Alert.alert(
-					'Payment Successful',
-					`Payment Success for Amount: ${totalAmount}, PaymentID: ${paymentIntent.id}`
-				);
-			}
-		} catch (error) {
-			Alert.alert('Error when processing payment', error.message);
-		}
-	};
+	// 		if (paymentIntent) {
+	// 			// Payment confirmation success
+	// 			Alert.alert(
+	// 				'Payment Successful',
+	// 				`Payment Success for Amount: ${totalAmount}, PaymentID: ${paymentIntent.id}`
+	// 			);
+	// 		}
+	// 	} catch (error) {
+	// 		Alert.alert('Error when processing payment', error.message);
+	// 	}
+	// };
 
 	const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
@@ -140,8 +141,7 @@ const Cart = () => {
 				},
 				body: JSON.stringify({
 					currency: 'INR',
-					amount:
-						parseFloat(parseFloat(totalAmount).toFixed(2)) * 100,
+					amount: Math.round(totalAmount * 100),
 				}),
 			});
 			const { clientSecret, ephemeralKey, customer, error } =
@@ -201,6 +201,7 @@ const Cart = () => {
 				// console.log(error);
 				return;
 			}
+			dispatch(newOrder(items));
 			dispatch(emptyCart());
 			Alert.alert(
 				'Success',

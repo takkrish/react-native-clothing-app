@@ -26,6 +26,18 @@ const RootLayout = () => {
 									animation: 'slide_from_bottom',
 								}}
 							/>
+							<Stack.Screen
+								name='(orders)/orders/index'
+								options={{
+									animation: 'slide_from_right',
+								}}
+							/>
+							<Stack.Screen
+								name='(orders)/orders/[orderID]'
+								options={{
+									animation: 'slide_from_bottom',
+								}}
+							/>
 						</Stack>
 					</RootSiblingParent>
 				</StripeProvider>
