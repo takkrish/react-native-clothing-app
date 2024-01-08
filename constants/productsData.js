@@ -11,7 +11,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 2,
@@ -23,7 +23,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, sale],
+		category: [mens, sale],
 	},
 	{
 		id: 3,
@@ -35,7 +35,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens, sale],
+		category: [womens, sale],
 	},
 	{
 		id: 4,
@@ -47,7 +47,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens],
+		category: [mens],
 	},
 	{
 		id: 5,
@@ -59,7 +59,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids],
+		category: [kids],
 	},
 	{
 		id: 6,
@@ -71,7 +71,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 7,
@@ -83,7 +83,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids, sale],
+		category: [kids, sale],
 	},
 	{
 		id: 8,
@@ -95,7 +95,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids],
+		category: [kids],
 	},
 	{
 		id: 9,
@@ -107,7 +107,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, kids],
+		category: [mens, kids],
 	},
 	{
 		id: 10,
@@ -119,7 +119,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 11,
@@ -131,7 +131,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 12,
@@ -143,7 +143,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Suit',
 		size: 'M',
-		gender: [mens],
+		category: [mens],
 	},
 	{
 		id: 13,
@@ -155,7 +155,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 14,
@@ -167,7 +167,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [womens, kids, sale],
+		category: [womens, kids, sale],
 	},
 	{
 		id: 15,
@@ -179,7 +179,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids],
+		category: [kids],
 	},
 	{
 		id: 16,
@@ -191,7 +191,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 17,
@@ -203,7 +203,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 18,
@@ -215,7 +215,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
 		id: 19,
@@ -227,10 +227,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 19,
+		id: 20,
 		name: 'Pink T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -239,10 +239,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, kids, sale],
+		category: [mens, kids, sale],
 	},
 	{
-		id: 20,
+		id: 21,
 		name: 'Black T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -251,10 +251,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, sale],
+		category: [mens, sale],
 	},
 	{
-		id: 20,
+		id: 22,
 		name: 'Black Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -263,10 +263,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Shirt',
 		size: 'M',
-		gender: [mens],
+		category: [mens],
 	},
 	{
-		id: 21,
+		id: 23,
 		name: 'Black Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -275,10 +275,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 22,
+		id: 24,
 		name: 'Yellow Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -287,10 +287,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 23,
+		id: 25,
 		name: 'Orange Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -299,10 +299,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens, sale],
+		category: [womens, sale],
 	},
 	{
-		id: 24,
+		id: 26,
 		name: 'Blue Pink Set',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -311,10 +311,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Set',
 		size: 'M',
-		gender: [kids, sale],
+		category: [kids, sale],
 	},
 	{
-		id: 25,
+		id: 27,
 		name: 'Black Yellow Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -323,10 +323,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Shirt',
 		size: 'M',
-		gender: [mens, sale],
+		category: [mens, sale],
 	},
 	{
-		id: 26,
+		id: 28,
 		name: 'Red Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -335,10 +335,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 27,
+		id: 29,
 		name: 'White Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -347,10 +347,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 27,
+		id: 30,
 		name: 'Olive Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -359,10 +359,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens, sale],
+		category: [womens, sale],
 	},
 	{
-		id: 28,
+		id: 31,
 		name: 'Yellow Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -371,10 +371,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 29,
+		id: 32,
 		name: 'White Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -383,10 +383,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 30,
+		id: 33,
 		name: 'White T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -395,10 +395,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, sale],
+		category: [mens, sale],
 	},
 	{
-		id: 31,
+		id: 34,
 		name: 'Blue Jacket',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -407,10 +407,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Jacket',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 32,
+		id: 35,
 		name: 'Black T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -419,10 +419,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, womens, kids, sale],
+		category: [mens, womens, kids, sale],
 	},
 	{
-		id: 33,
+		id: 36,
 		name: 'White T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -431,10 +431,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, kids, sale],
+		category: [mens, kids, sale],
 	},
 	{
-		id: 34,
+		id: 37,
 		name: 'Jeans T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -443,10 +443,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [womens, kids, sale],
+		category: [womens, kids, sale],
 	},
 	{
-		id: 35,
+		id: 38,
 		name: 'White T-Shirt',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -455,10 +455,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'T-Shirt',
 		size: 'M',
-		gender: [mens, kids, sale],
+		category: [mens, kids, sale],
 	},
 	{
-		id: 36,
+		id: 39,
 		name: 'Red Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -467,10 +467,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 37,
+		id: 40,
 		name: 'Peach Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -479,10 +479,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 38,
+		id: 41,
 		name: 'Blue Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -491,10 +491,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids],
+		category: [kids],
 	},
 	{
-		id: 39,
+		id: 42,
 		name: 'Black Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -503,10 +503,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 40,
+		id: 43,
 		name: 'Strip Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -515,10 +515,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [kids],
+		category: [kids],
 	},
 	{
-		id: 41,
+		id: 44,
 		name: 'White Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -527,10 +527,10 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 	{
-		id: 42,
+		id: 45,
 		name: 'Golden Dress',
 		description:
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget consequat aliquam, nulla sapien consectetur ex, quis mollis ex lorem sit amet urna. Donec auctor, velit vitae ultrices ultrices, nisl justo luctus nunc, in sollicitudin dolor nunc vitae nisl. Sed vitae nunc id nisl ultrices luctus. Sed vitae nunc id nisl ultrices luctus.',
@@ -539,7 +539,7 @@ export const productsData = [
 		quantity: 1,
 		type: 'Dress',
 		size: 'M',
-		gender: [womens],
+		category: [womens],
 	},
 ];
 

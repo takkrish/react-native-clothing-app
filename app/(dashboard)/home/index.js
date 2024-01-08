@@ -30,7 +30,7 @@ const App = () => {
 		} else {
 			setProductItems(
 				productsData.filter((item) =>
-					item.gender.includes(selectedCategory)
+					item.category.includes(selectedCategory)
 				)
 			);
 		}

@@ -5,11 +5,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from '../reducers/userSlice';
 import cartReducer from '../reducers/cartSlice';
 import FavouriteReducer from '../reducers/favouriteSlice';
+import OrderReducer from '../reducers/orderSlice';
 
 const reducers = combineReducers({
 	USER: userReducer,
 	CART: cartReducer,
 	FAVOURITE: FavouriteReducer,
+	ORDERS: OrderReducer,
 });
 
 const persistConfig = {
