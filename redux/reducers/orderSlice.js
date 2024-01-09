@@ -7,14 +7,11 @@ const OrderSlice = createSlice({
 	},
 	reducers: {
 		newOrder: (state, action) => {
-			state.orders.unshift(action.payload);
-		},
-		clearOrders: (state) => {
-			state.orders = [];
+			state.orders = [action.payload, ...state.orders];
 		},
 	},
 });
 
-export const { newOrder, clearOrders } = OrderSlice.actions;
+export const { newOrder } = OrderSlice.actions;
 
 export default OrderSlice.reducer;

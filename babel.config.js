@@ -6,6 +6,7 @@ module.exports = function (api) {
 			'expo-router/babel',
 			'module:react-native-dotenv',
 			'nativewind/babel',
+			'react-native-reanimated/plugin',
 		],
 	};
 };
