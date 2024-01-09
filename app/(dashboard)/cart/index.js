@@ -28,6 +28,7 @@ import {
 } from '@stripe/stripe-react-native';
 
 import { API_URL } from '@env';
+import { randomUUID } from 'expo-crypto';
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -134,16 +135,19 @@ const Cart = () => {
 
 	const fetchPaymentSheetParams = async () => {
 		try {
-			const response = await fetch(`${API_URL}/payments/payment-sheet`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					currency: 'INR',
-					amount: Math.round(totalAmount * 100),
-				}),
-			});
+			const response = await fetch(
+				`${'http://192.168.152.192:3000'}/payments/payment-sheet`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						currency: 'INR',
+						amount: Math.round(totalAmount * 100),
+					}),
+				}
+			);
 			const { clientSecret, ephemeralKey, customer, error } =
 				await response.json();
 
@@ -201,11 +205,24 @@ const Cart = () => {
 				// console.log(error);
 				return;
 			}
-			dispatch(newOrder(items));
+			const currentDate = new Date();
+			dispatch(
+				newOrder({
+					id: randomUUID(),
+					date:
+						currentDate.toDateString() +
+						' ' +
+						currentDate.toLocaleTimeString(),
+					totalAmount: parseFloat(totalAmount).toFixed(2),
+					items,
+				})
+			);
 			dispatch(emptyCart());
 			Alert.alert(
 				'Success',
-				`Payment for ₹${totalAmount} is successful!`
+				`Payment for ₹${parseFloat(totalAmount).toFixed(
+					2
+				)} is successful!`
 			);
 		} catch (error) {
 			Alert.alert('Error openPaymentSheet', error.message);
