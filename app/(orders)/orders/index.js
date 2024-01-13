@@ -121,7 +121,7 @@ const Order = () => {
 								fontFamily: 'Inter_600SemiBold',
 							}}>
 							Total Items :{' '}
-							{orders[0].items.reduce(
+							{orders[0]?.items?.reduce(
 								(prev, curr) => prev + curr.quantity,
 								0
 							)}
@@ -134,101 +134,116 @@ const Order = () => {
 							Amount Paid : ₹{orders[0].totalAmount}
 						</Text>
 					</TouchableOpacity>
-					<Text
-						className='my-5'
-						style={{
-							fontFamily: 'Inter_600SemiBold',
-						}}>
-						Order History
-					</Text>
-					<FlatList
-						scrollEnabled={false}
-						data={orders}
-						renderItem={({ item, index }) => {
-							const ordersList = item;
-							if (index === 0) return null;
-							return (
-								<TouchableOpacity
-									key={index}
-									onPress={() =>
-										router.push(
-											`(orders)/orders/${ordersList.id}`
-										)
-									}
-									activeOpacity={0.5}
-									className='mb-5 bg-white rounded-xl border border-zinc-200 overflow-hidden'>
-									<Text
-										className='p-4 border-b border-gray-300 bg-zinc-200 text-xs text-zinc-600'
-										style={{
-											fontFamily: 'Inter_600SemiBold',
-										}}>
-										#{ordersList.id}
-									</Text>
-									<Text
-										className='p-4 border-b border-gray-300 text-xs'
-										style={{
-											fontFamily: 'Inter_600SemiBold',
-										}}>
-										{ordersList.date}
-									</Text>
+					{orders.length > 1 && (
+						<>
+							<Text
+								className='my-5'
+								style={{
+									fontFamily: 'Inter_600SemiBold',
+								}}>
+								Order History
+							</Text>
+							<FlatList
+								scrollEnabled={false}
+								data={orders}
+								renderItem={({ item, index }) => {
+									const ordersList = item;
+									if (index === 0) return null;
+									return (
+										<TouchableOpacity
+											key={index}
+											onPress={() =>
+												router.push(
+													`(orders)/orders/${ordersList.id}`
+												)
+											}
+											activeOpacity={0.5}
+											className='mb-5 bg-white rounded-xl border border-zinc-200 overflow-hidden'>
+											<Text
+												className='p-4 border-b border-gray-300 bg-zinc-200 text-xs text-zinc-600'
+												style={{
+													fontFamily:
+														'Inter_600SemiBold',
+												}}>
+												#{ordersList.id}
+											</Text>
+											<Text
+												className='p-4 border-b border-gray-300 text-xs'
+												style={{
+													fontFamily:
+														'Inter_600SemiBold',
+												}}>
+												{ordersList.date}
+											</Text>
 
-									<View className='p-4 border-b border-zinc-300'>
-										<FlatList
-											scrollEnabled={false}
-											data={item.items}
-											renderItem={({ item, index }) => {
-												const orderedItem = item;
-												return (
-													<View
-														key={index}
-														className='flex flex-row justify-between items-center'>
-														<Text
-															className='text-xs'
-															style={{
-																fontFamily:
-																	'Inter_600SemiBold',
-															}}>
-															{orderedItem.name}
-														</Text>
-														<Text
-															className='text-xs'
-															style={{
-																fontFamily:
-																	'Inter_600SemiBold',
-															}}>
-															x
-															{
-																orderedItem.quantity
-															}
-														</Text>
-													</View>
-												);
-											}}
-										/>
-									</View>
-									<Text
-										className='p-4 border-b border-gray-300 text-xs'
-										style={{
-											fontFamily: 'Inter_600SemiBold',
-										}}>
-										Total Items :{' '}
-										{item.items.reduce(
-											(prev, curr) =>
-												prev + curr.quantity,
-											0
-										)}
-									</Text>
-									<Text
-										className='p-4 bg-emerald-300 text-xs'
-										style={{
-											fontFamily: 'Inter_600SemiBold',
-										}}>
-										Amount Paid : ₹{ordersList.totalAmount}
-									</Text>
-								</TouchableOpacity>
-							);
-						}}
-					/>
+											<View className='p-4 border-b border-zinc-300'>
+												<FlatList
+													scrollEnabled={false}
+													data={item.items}
+													renderItem={({
+														item,
+														index,
+													}) => {
+														const orderedItem =
+															item;
+														return (
+															<View
+																key={index}
+																className='flex flex-row justify-between items-center'>
+																<Text
+																	className='text-xs'
+																	style={{
+																		fontFamily:
+																			'Inter_600SemiBold',
+																	}}>
+																	{
+																		orderedItem.name
+																	}
+																</Text>
+																<Text
+																	className='text-xs'
+																	style={{
+																		fontFamily:
+																			'Inter_600SemiBold',
+																	}}>
+																	x
+																	{
+																		orderedItem.quantity
+																	}
+																</Text>
+															</View>
+														);
+													}}
+												/>
+											</View>
+											<Text
+												className='p-4 border-b border-gray-300 text-xs'
+												style={{
+													fontFamily:
+														'Inter_600SemiBold',
+												}}>
+												Total Items :{' '}
+												{item?.items?.reduce(
+													(prev, curr) =>
+														prev + curr.quantity,
+													0
+												)}
+											</Text>
+											<Text
+												className='p-4 bg-emerald-300 text-xs'
+												style={{
+													fontFamily:
+														'Inter_600SemiBold',
+												}}>
+												Amount Paid : ₹
+												{ordersList.totalAmount}
+											</Text>
+										</TouchableOpacity>
+									);
+								}}
+							/>
+						</>
+					)}
 				</ScrollView>
 			)}
 		</SafeAreaView>
