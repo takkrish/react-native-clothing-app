@@ -135,19 +135,16 @@ const Cart = () => {
 
 	const fetchPaymentSheetParams = async () => {
 		try {
-			const response = await fetch(
-				`${'http://192.168.152.192:3000'}/payments/payment-sheet`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						currency: 'INR',
-						amount: Math.round(totalAmount * 100),
-					}),
-				}
-			);
+			const response = await fetch(`${API_URL}/payments/payment-sheet`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					currency: 'INR',
+					amount: Math.round(totalAmount * 100),
+				}),
+			});
 			const { clientSecret, ephemeralKey, customer, error } =
 				await response.json();
 

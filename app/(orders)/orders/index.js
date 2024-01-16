@@ -58,16 +58,16 @@ const Order = () => {
 							router.push(`(orders)/orders/${orders[0].id}`)
 						}
 						activeOpacity={0.5}
-						className='mb-5 bg-white rounded-xl border border-zinc-200 overflow-hidden'>
+						className='mb-5 bg-white rounded-xl border border-zinc-300 overflow-hidden'>
 						<Text
-							className='p-4 border-b border-gray-300 bg-zinc-200 text-xs text-zinc-600'
+							className='p-4 border-b border-zinc-300 bg-zinc-200 text-xs text-zinc-600'
 							style={{
 								fontFamily: 'Inter_600SemiBold',
 							}}>
 							#{orders[0].id}
 						</Text>
 						<Text
-							className='p-4 border-b border-gray-300 text-xs text-zinc-800'
+							className='p-4 border-b border-zinc-300 text-xs text-zinc-800'
 							style={{
 								fontFamily: 'Inter_600SemiBold',
 							}}>
@@ -116,12 +116,12 @@ const Order = () => {
 							/>
 						</View>
 						<Text
-							className='p-4 border-b border-gray-300 text-xs'
+							className='p-4 border-b border-zinc-300 text-xs'
 							style={{
 								fontFamily: 'Inter_600SemiBold',
 							}}>
 							Total Items :{' '}
-							{orders[0]?.items?.reduce(
+							{orders[0].items.reduce(
 								(prev, curr) => prev + curr.quantity,
 								0
 							)}
@@ -158,9 +158,9 @@ const Order = () => {
 												)
 											}
 											activeOpacity={0.5}
-											className='mb-5 bg-white rounded-xl border border-zinc-200 overflow-hidden'>
+											className='mb-5 bg-white rounded-xl border border-zinc-300 overflow-hidden'>
 											<Text
-												className='p-4 border-b border-gray-300 bg-zinc-200 text-xs text-zinc-600'
+												className='p-4 border-b border-zinc-300 bg-zinc-200 text-xs text-zinc-600'
 												style={{
 													fontFamily:
 														'Inter_600SemiBold',
@@ -168,7 +168,7 @@ const Order = () => {
 												#{ordersList.id}
 											</Text>
 											<Text
-												className='p-4 border-b border-gray-300 text-xs'
+												className='p-4 border-b border-zinc-300 text-xs'
 												style={{
 													fontFamily:
 														'Inter_600SemiBold',
@@ -217,13 +217,13 @@ const Order = () => {
 												/>
 											</View>
 											<Text
-												className='p-4 border-b border-gray-300 text-xs'
+												className='p-4 border-b border-zinc-300 text-xs'
 												style={{
 													fontFamily:
 														'Inter_600SemiBold',
 												}}>
 												Total Items :{' '}
-												{item?.items?.reduce(
+												{item.items.reduce(
 													(prev, curr) =>
 														prev + curr.quantity,
 													0
