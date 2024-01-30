@@ -29,6 +29,11 @@ import {
 
 import { API_URL } from '@env';
 import { randomUUID } from 'expo-crypto';
+import Constants from 'expo-constants';
+const { manifest2 } = Constants;
+const Local_API_URL = `http://${manifest2.extra.expoClient.hostUri
+	.split(':')
+	.shift()}:3000`;
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -135,16 +140,19 @@ const Cart = () => {
 
 	const fetchPaymentSheetParams = async () => {
 		try {
-			const response = await fetch(`${API_URL}/payments/payment-sheet`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					currency: 'INR',
-					amount: Math.round(totalAmount * 100),
-				}),
-			});
+			const response = await fetch(
+				`${Local_API_URL}/payments/payment-sheet`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						currency: 'INR',
+						amount: Math.round(totalAmount * 100),
+					}),
+				}
+			);
 			const { clientSecret, ephemeralKey, customer, error } =
 				await response.json();
 
